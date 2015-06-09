@@ -6,6 +6,8 @@
 package Interaction;
 
 import java.sql.*;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -22,7 +24,7 @@ public class Goods extends javax.swing.JFrame {
     
     Boolean ada = false;
     Boolean edit = false;
-    String sSatuan;
+    String sJenis;
     
     //private Object[][] Tablebarang =  null;
     private Object[][] dataTable = null;
@@ -40,16 +42,89 @@ public class Goods extends javax.swing.JFrame {
     
     private void setField()
     {
-        int row=Tablebarang.getSelectedRow();
-        Textkodejln.setText((String)Tablebarang.getValueAt(row,0));
-        Textnamabus.setText((String)Tablebarang.getValueAt(row,1));
-        Combojenis.setSelectedItem((String)Tablebarang.getValueAt(row,2));
-        String harga = Double.toString((Double)Tablebarang.getValueAt(row,3));
-        Textregion.setText(harga);
-        String stok=Integer.toString((Integer)Tablebarang.getValueAt(row,4)); 
-        Textstocktujuan.setText(stok);
-        String stokmin=Integer.toString((Integer)Tablebarang.getValueAt(row,5));
-        Textharga.setText(stokmin);
+        int row=Tableperjalanan.getSelectedRow();
+        Textkodejln.setText((String)Tableperjalanan.getValueAt(row,0));
+        Textnamabus.setText((String)Tableperjalanan.getValueAt(row,1));
+        Combojenis.setSelectedItem((String)Tableperjalanan.getValueAt(row,2));  
+        Textregion.setText((String)Tableperjalanan.getValueAt(row,3));
+        Textstujuan.setText((String)Tableperjalanan.getValueAt(row,4)); 
+        String harga=Double.toString((Double)Tableperjalanan.getValueAt(row,5));
+        Textharga.setText(harga);
+    }
+    
+        private void open_db()
+    {       
+        try{
+            koneksiMysql kon = new koneksiMysql("localhost","root","","masterDB");
+            con = kon.getConnection();
+            //System.out.println("Berhasil ");
+            }catch (Exception e) {
+            System.out.println("Error : "+e);
+    }
+    }
+    
+        
+            private void baca_data()
+    {
+        try{
+            stm = con.createStatement();
+            RsBrg = stm.executeQuery("select * from listPerjalanan");
+                
+            ResultSetMetaData meta = RsBrg.getMetaData();
+            int col = meta.getColumnCount();            
+            int baris = 0;
+            while(RsBrg.next()) {
+                baris = RsBrg.getRow();
+            }
+            
+            dataTable = new Object[baris][col];
+            int x = 0;
+            RsBrg.beforeFirst();
+            while(RsBrg.next()) {
+                dataTable[x][0] = RsBrg.getString("kd_prjlnan");
+                dataTable[x][1] = RsBrg.getString("nm_bus");
+                dataTable[x][2] = RsBrg.getString("jenis");
+                dataTable[x][3] = RsBrg.getString("region");
+                dataTable[x][4] = RsBrg.getString("tujuan");
+                dataTable[x][5] = RsBrg.getDouble("harga");
+                x++;
+            }
+            Tableperjalanan.setModel(new DefaultTableModel(dataTable,header));        
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+            
+    private void kosong()
+    {
+        Textkodejln.setText("");
+        Textnamabus.setText("");
+        Textregion.setText(""); 
+        Textstujuan.setText("");
+        Textharga.setText("");
+    }
+    
+    private void aktif(boolean x)
+    {
+        Textkodejln.setEditable(x);
+        Textnamabus.setEditable(x);
+        //cmbSatuan.setEditable(x);
+        Combojenis.setEnabled(x);
+        Textregion.setEditable(x);
+        Textstujuan.setEditable(x);
+        Textharga.setEditable(x);
+    }
+    
+        private void setTombol(boolean t)
+    {
+        Buttontambah.setEnabled(t);
+        Buttonkoreksi.setEnabled(t);
+        Buttonhapus.setEnabled(t);
+        Buttonsimpan.setEnabled(!t);
+        Buttonbatal.setEnabled(!t);
+        Buttonkeluar.setEnabled(t);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -70,11 +145,11 @@ public class Goods extends javax.swing.JFrame {
         Textkodejln = new javax.swing.JTextField();
         Textnamabus = new javax.swing.JTextField();
         Textregion = new javax.swing.JTextField();
-        Textstocktujuan = new javax.swing.JTextField();
+        Textstujuan = new javax.swing.JTextField();
         Textharga = new javax.swing.JTextField();
         Combojenis = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
-        Tablebarang = new javax.swing.JTable();
+        Tableperjalanan = new javax.swing.JTable();
         Buttontambah = new javax.swing.JButton();
         Buttonsimpan = new javax.swing.JButton();
         Buttonkoreksi = new javax.swing.JButton();
@@ -98,9 +173,9 @@ public class Goods extends javax.swing.JFrame {
 
         jLabel6.setText("Harga");
 
-        Combojenis.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        Combojenis.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Economi", "AC", "Patas", "VIP" }));
 
-        Tablebarang.setModel(new javax.swing.table.DefaultTableModel(
+        Tableperjalanan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -111,7 +186,12 @@ public class Goods extends javax.swing.JFrame {
                 "", "", "", "", "", ""
             }
         ));
-        jScrollPane1.setViewportView(Tablebarang);
+        Tableperjalanan.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TableperjalananMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(Tableperjalanan);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -133,7 +213,7 @@ public class Goods extends javax.swing.JFrame {
                     .addComponent(Textregion, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Textharga, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Textnamabus, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Textstocktujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Textstujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(96, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
@@ -162,7 +242,7 @@ public class Goods extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(Textstocktujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Textstujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
@@ -173,16 +253,46 @@ public class Goods extends javax.swing.JFrame {
         );
 
         Buttontambah.setText("Tambah");
+        Buttontambah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtontambahActionPerformed(evt);
+            }
+        });
 
         Buttonsimpan.setText("Simpan");
+        Buttonsimpan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonsimpanActionPerformed(evt);
+            }
+        });
 
         Buttonkoreksi.setText("Koreksi");
+        Buttonkoreksi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonkoreksiActionPerformed(evt);
+            }
+        });
 
         Buttonhapus.setText("Hapus");
+        Buttonhapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonhapusActionPerformed(evt);
+            }
+        });
 
         Buttonbatal.setText("Batal");
+        Buttonbatal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonbatalActionPerformed(evt);
+            }
+        });
 
         Buttonkeluar.setText("Keluar");
+        Buttonkeluar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonkeluarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -226,6 +336,71 @@ public class Goods extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void ButtontambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtontambahActionPerformed
+        aktif(true);
+        setTombol(false);
+        kosong();
+        Textkodejln.requestFocusInWindow();
+    }//GEN-LAST:event_ButtontambahActionPerformed
+
+    private void ButtonsimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonsimpanActionPerformed
+        String tKode=Textkodejln.getText();
+        String tNama=Textnamabus.getText();
+        String tRegion=Textregion.getText();
+        String tTujuan=Textstujuan.getText();
+        
+        double hrg=Double.parseDouble(Textharga.getText());
+        try{
+        if (edit==true)
+                {
+            stm.executeUpdate("update listPerjalanan set kd_prjlnan='"+tNama+"',jenis='"+sJenis+"',"
+            + ",region='"+tRegion+"',tujuan='"+tTujuan+"', harga="+hrg+" where kd_brg='" + tKode + "'");
+                }else
+        {
+            stm.executeUpdate("INSERT into listPerjalanan VALUES('"+tKode+"','"+tNama+
+                    "','"+sJenis+"','"+tRegion+"','"+tTujuan+"',"+hrg+")");
+        }
+         Tableperjalanan.setModel(new DefaultTableModel(dataTable,header));
+        baca_data();
+        aktif(false);
+        setTombol(true); 
+    }catch(SQLException e) {
+       JOptionPane.showMessageDialog(null, e);
+ }
+    }//GEN-LAST:event_ButtonsimpanActionPerformed
+
+    private void ButtonhapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonhapusActionPerformed
+                 try{
+            String sql="delete from listPerjalanan where kd_prjlnan='" + Textkodejln.getText()+ "'";
+            stm.executeUpdate(sql);
+            baca_data();
+            }
+            catch(SQLException e)
+            {
+                JOptionPane.showMessageDialog(null, e);
+            }
+    }//GEN-LAST:event_ButtonhapusActionPerformed
+
+    private void ButtonkoreksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonkoreksiActionPerformed
+        edit=true;                                          
+        aktif(true);
+        setTombol(false);
+        Textkodejln.setEditable(false);
+    }//GEN-LAST:event_ButtonkoreksiActionPerformed
+
+    private void ButtonbatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonbatalActionPerformed
+        aktif(false);
+        setTombol(true);
+    }//GEN-LAST:event_ButtonbatalActionPerformed
+
+    private void ButtonkeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonkeluarActionPerformed
+        dispose();
+    }//GEN-LAST:event_ButtonkeluarActionPerformed
+
+    private void TableperjalananMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableperjalananMouseClicked
+        setField();
+    }//GEN-LAST:event_TableperjalananMouseClicked
 
     /**
      * @param args the command line arguments
@@ -277,12 +452,12 @@ public class Goods extends javax.swing.JFrame {
     private javax.swing.JButton Buttonsimpan;
     private javax.swing.JButton Buttontambah;
     private javax.swing.JComboBox Combojenis;
-    private javax.swing.JTable Tablebarang;
+    private javax.swing.JTable Tableperjalanan;
     private javax.swing.JTextField Textharga;
     private javax.swing.JTextField Textkodejln;
     private javax.swing.JTextField Textnamabus;
     private javax.swing.JTextField Textregion;
-    private javax.swing.JTextField Textstocktujuan;
+    private javax.swing.JTextField Textstujuan;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -292,4 +467,5 @@ public class Goods extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+
 }
