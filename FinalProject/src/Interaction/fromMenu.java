@@ -55,7 +55,7 @@ public class fromMenu extends javax.swing.JFrame {
             }
         });
 
-        jMenuItem1.setText("Data Barang");
+        jMenuItem1.setText("Data Perjalanan");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
@@ -139,7 +139,7 @@ public class fromMenu extends javax.swing.JFrame {
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
         dispose();
-        new Goods().setVisible(true);
+        new ListPerjalanan().setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**

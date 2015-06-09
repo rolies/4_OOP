@@ -14,10 +14,10 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author bima
  */
-public class Goods extends javax.swing.JFrame {
+public class ListPerjalanan extends javax.swing.JFrame {
 
     /**
-     * Creates new form Goods
+     * Creates new form ListPerjalanan
      */
     Connection con;
     ResultSet RsBrg;
@@ -31,7 +31,7 @@ public class Goods extends javax.swing.JFrame {
     private Object[][] dataTable = null;
     private String[] header = {"Kode","Nama Bus","Jenis","Region","Tujuan","Harga"};
 
-    public Goods() {
+    public ListPerjalanan() {
         initComponents();
         setLocationRelativeTo(null);
         open_db();
@@ -433,14 +433,22 @@ public class Goods extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Goods.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ListPerjalanan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Goods.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ListPerjalanan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Goods.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ListPerjalanan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Goods.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ListPerjalanan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -453,7 +461,7 @@ public class Goods extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Goods().setVisible(true);
+                new ListPerjalanan().setVisible(true);
             }
         });
     }

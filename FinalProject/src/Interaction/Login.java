@@ -31,9 +31,9 @@ public class Login extends javax.swing.JFrame {
     
     private void open_db(){
      try {
-         koneksiMysql kon = new koneksiMysql("localhost", "root","", "Selling");
+         koneksiMysql kon = new koneksiMysql("localhost", "root","", "masterDB");
          Con = kon.getConnection();
-         System.out.println("Koneksi database Selling sukses");
+         System.out.println("Koneksi database MasterDB sukses");
      }catch (Exception e) {
          System.out.println("Error: "+e);
      }
