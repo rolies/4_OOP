@@ -22,17 +22,35 @@ public class Goods extends javax.swing.JFrame {
     
     Boolean ada = false;
     Boolean edit = false;
-    String aSatuan;
+    String sSatuan;
     
     //private Object[][] Tablebarang =  null;
-    
+    private Object[][] dataTable = null;
+    private String[] header = {"Kode","Nama Bus","Jenis","Region","Tujuan","Harga"};
+
     public Goods() {
         initComponents();
         setLocationRelativeTo(null);
-        
+        open_db();
+        baca_data();
+        aktif(false);
+        setTombol(true);
  
     }
-
+    
+    private void setField()
+    {
+        int row=Tablebarang.getSelectedRow();
+        Textkodejln.setText((String)Tablebarang.getValueAt(row,0));
+        Textnamabus.setText((String)Tablebarang.getValueAt(row,1));
+        Combojenis.setSelectedItem((String)Tablebarang.getValueAt(row,2));
+        String harga = Double.toString((Double)Tablebarang.getValueAt(row,3));
+        Textregion.setText(harga);
+        String stok=Integer.toString((Integer)Tablebarang.getValueAt(row,4)); 
+        Textstocktujuan.setText(stok);
+        String stokmin=Integer.toString((Integer)Tablebarang.getValueAt(row,5));
+        Textharga.setText(stokmin);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -49,12 +67,12 @@ public class Goods extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        Textkodebrg = new javax.swing.JTextField();
-        Textnamabrg = new javax.swing.JTextField();
-        Texthargabrg = new javax.swing.JTextField();
-        Textstockbrg = new javax.swing.JTextField();
-        TextminStock = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox();
+        Textkodejln = new javax.swing.JTextField();
+        Textnamabus = new javax.swing.JTextField();
+        Textregion = new javax.swing.JTextField();
+        Textstocktujuan = new javax.swing.JTextField();
+        Textharga = new javax.swing.JTextField();
+        Combojenis = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         Tablebarang = new javax.swing.JTable();
         Buttontambah = new javax.swing.JButton();
@@ -68,19 +86,19 @@ public class Goods extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(158, 227, 228));
 
-        jLabel1.setText("Kode Barang");
+        jLabel1.setText("Kode Perjalanan");
 
-        jLabel2.setText("Nama Barang");
+        jLabel2.setText("Nama Bus");
 
-        jLabel3.setText("Satuan");
+        jLabel3.setText("Jenis");
 
-        jLabel4.setText("Harga");
+        jLabel4.setText("Region");
 
-        jLabel5.setText("Stock");
+        jLabel5.setText("Tujuan");
 
-        jLabel6.setText("Stock Minimal");
+        jLabel6.setText("Harga");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        Combojenis.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         Tablebarang.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -90,7 +108,7 @@ public class Goods extends javax.swing.JFrame {
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "Kode", "Nama Barang", "Satuan", "Harga", "Stock", "Min-Stock"
+                "", "", "", "", "", ""
             }
         ));
         jScrollPane1.setViewportView(Tablebarang);
@@ -110,13 +128,13 @@ public class Goods extends javax.swing.JFrame {
                     .addComponent(jLabel3))
                 .addGap(28, 28, 28)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Textstockbrg, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Textkodebrg, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Textnamabrg, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Texthargabrg, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(TextminStock, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(106, Short.MAX_VALUE))
+                    .addComponent(Combojenis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Textkodejln, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Textregion, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Textharga, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Textnamabus, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Textstocktujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(96, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1)
@@ -127,28 +145,28 @@ public class Goods extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Textkodebrg, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Textkodejln, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(Textnamabrg, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Textnamabus, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Combojenis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(Texthargabrg, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Textregion, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(Textstockbrg, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Textstocktujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(TextminStock, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Textharga, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(21, Short.MAX_VALUE))
@@ -258,13 +276,13 @@ public class Goods extends javax.swing.JFrame {
     private javax.swing.JButton Buttonkoreksi;
     private javax.swing.JButton Buttonsimpan;
     private javax.swing.JButton Buttontambah;
+    private javax.swing.JComboBox Combojenis;
     private javax.swing.JTable Tablebarang;
-    private javax.swing.JTextField Texthargabrg;
-    private javax.swing.JTextField Textkodebrg;
-    private javax.swing.JTextField TextminStock;
-    private javax.swing.JTextField Textnamabrg;
-    private javax.swing.JTextField Textstockbrg;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JTextField Textharga;
+    private javax.swing.JTextField Textkodejln;
+    private javax.swing.JTextField Textnamabus;
+    private javax.swing.JTextField Textregion;
+    private javax.swing.JTextField Textstocktujuan;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
