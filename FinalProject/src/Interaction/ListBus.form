@@ -92,7 +92,7 @@
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="94" max="-2" attributes="0"/>
-              <EmptySpace pref="43" max="32767" attributes="0"/>
+              <EmptySpace pref="60" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="Buttontambah" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="Buttonsimpan" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -110,7 +110,7 @@
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Ubuntu" size="18" style="0"/>
+          <Font name="Ubuntu" size="12" style="0"/>
         </Property>
         <Property name="text" type="java.lang.String" value="ID"/>
       </Properties>
@@ -118,7 +118,7 @@
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Ubuntu" size="18" style="0"/>
+          <Font name="Ubuntu" size="12" style="0"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Nama Bus"/>
       </Properties>
@@ -126,7 +126,7 @@
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Ubuntu" size="18" style="0"/>
+          <Font name="Ubuntu" size="12" style="0"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Jumlah Bus"/>
       </Properties>
@@ -134,7 +134,7 @@
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Ubuntu" size="18" style="0"/>
+          <Font name="Ubuntu" size="12" style="0"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Jumlah Bangku"/>
       </Properties>

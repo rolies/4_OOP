@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 4.4.3
+-- version 4.3.11
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Jun 09, 2015 at 04:56 
+-- Host: 127.0.0.1
+-- Generation Time: Jun 09, 2015 at 06:20 PM
 -- Server version: 5.6.24
 -- PHP Version: 5.6.8
 
@@ -17,16 +17,16 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `masterDB`
+-- Database: `masterdb`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `listBus`
+-- Table structure for table `listbus`
 --
 
-CREATE TABLE IF NOT EXISTS `listBus` (
+CREATE TABLE IF NOT EXISTS `listbus` (
   `kode` varchar(10) NOT NULL,
   `nm_bus` varchar(20) NOT NULL,
   `jmlh_Bus` int(5) NOT NULL,
@@ -34,19 +34,23 @@ CREATE TABLE IF NOT EXISTS `listBus` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `listBus`
+-- Dumping data for table `listbus`
 --
 
-INSERT INTO `listBus` (`kode`, `nm_bus`, `jmlh_Bus`, `jmlh_Bangku`) VALUES
-('04VIP', 'Lorena', 20, 30);
+INSERT INTO `listbus` (`kode`, `nm_bus`, `jmlh_Bus`, `jmlh_Bangku`) VALUES
+('01ECO', 'Sumber Kencono', 2, 20),
+('01VIP', 'Sumber Kencono', 4, 30),
+('02AC', 'Gumarang', 8, 30),
+('02PTS', 'Gumarang', 4, 40),
+('02VIP', 'Gumarang', 91, 34);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `listPerjalanan`
+-- Table structure for table `listperjalanan`
 --
 
-CREATE TABLE IF NOT EXISTS `listPerjalanan` (
+CREATE TABLE IF NOT EXISTS `listperjalanan` (
   `kd_prjlnan` varchar(10) NOT NULL,
   `nm_bus` varchar(20) NOT NULL,
   `jenis` varchar(15) NOT NULL,
@@ -56,19 +60,21 @@ CREATE TABLE IF NOT EXISTS `listPerjalanan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `listPerjalanan`
+-- Dumping data for table `listperjalanan`
 --
 
-INSERT INTO `listPerjalanan` (`kd_prjlnan`, `nm_bus`, `jenis`, `region`, `tujuan`, `harga`) VALUES
-('001', 'Sumber Kencono', 'AC', 'Jateng', 'Madiun', 60000);
+INSERT INTO `listperjalanan` (`kd_prjlnan`, `nm_bus`, `jenis`, `region`, `tujuan`, `harga`) VALUES
+('001', 'Sumber Kencono', 'Economi', 'Jateng', 'Madiun', 60000),
+('002', 'VVIP280', 'Patas', 'Sumatra', 'Palembang', 200000),
+('003', '02AC', 'Economi', 'sumatra', 'Lampung', 1000);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Login`
+-- Table structure for table `login`
 --
 
-CREATE TABLE IF NOT EXISTS `Login` (
+CREATE TABLE IF NOT EXISTS `login` (
   `id` int(4) NOT NULL,
   `user_id` varchar(10) DEFAULT NULL,
   `name` varchar(30) DEFAULT NULL,
@@ -76,10 +82,10 @@ CREATE TABLE IF NOT EXISTS `Login` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `Login`
+-- Dumping data for table `login`
 --
 
-INSERT INTO `Login` (`id`, `user_id`, `name`, `password`) VALUES
+INSERT INTO `login` (`id`, `user_id`, `name`, `password`) VALUES
 (407, 'rolies', 's. rolis', 'c684180210d57e2cced6e0cb59b620d9');
 
 --
@@ -87,15 +93,15 @@ INSERT INTO `Login` (`id`, `user_id`, `name`, `password`) VALUES
 --
 
 --
--- Indexes for table `listBus`
+-- Indexes for table `listbus`
 --
-ALTER TABLE `listBus`
+ALTER TABLE `listbus`
   ADD PRIMARY KEY (`kode`);
 
 --
--- Indexes for table `Login`
+-- Indexes for table `login`
 --
-ALTER TABLE `Login`
+ALTER TABLE `login`
   ADD PRIMARY KEY (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

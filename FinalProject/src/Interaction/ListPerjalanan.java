@@ -22,14 +22,16 @@ public class ListPerjalanan extends javax.swing.JFrame {
     Connection con;
     ResultSet RsBrg;
     Statement stm;
+    PreparedStatement pst;
     
     Boolean ada = false;
     Boolean edit = false;
     String sJenis;
+    String sIDbus;
     
     //private Object[][] Tablebarang =  null;
     private Object[][] dataTable = null;
-    private String[] header = {"Kode","Nama Bus","Jenis","Region","Tujuan","Harga"};
+    private String[] header = {"Kode","ID Bus","Jenis","Region","Tujuan","Harga"};
 
     public ListPerjalanan() {
         initComponents();
@@ -38,14 +40,27 @@ public class ListPerjalanan extends javax.swing.JFrame {
         baca_data();
         aktif(false);
         setTombol(true);
- 
+        Fillcombo();
     }
-    
+    private void Fillcombo(){
+	try {
+		String sql = "select * from listBus";
+		pst=con.prepareStatement(sql);
+		RsBrg=pst.executeQuery();
+		
+		while(RsBrg.next()){
+			String kode = RsBrg.getString("kode");
+			ComboIDBus.addItem(kode);
+		}
+	}catch(Exception e){
+	JOptionPane.showMessageDialog(null, e); 
+                }
+}
     private void setField()
     {
         int row=Tableperjalanan.getSelectedRow();
         Textkodejln.setText((String)Tableperjalanan.getValueAt(row,0));
-        Textnamabus.setText((String)Tableperjalanan.getValueAt(row,1));
+        ComboIDBus.setSelectedItem((String)Tableperjalanan.getValueAt(row,1));
         Combojenis.setSelectedItem((String)Tableperjalanan.getValueAt(row,2));  
         Textregion.setText((String)Tableperjalanan.getValueAt(row,3));
         Textstujuan.setText((String)Tableperjalanan.getValueAt(row,4)); 
@@ -110,8 +125,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
     private void aktif(boolean x)
     {
         Textkodejln.setEditable(x);
-        Textnamabus.setEditable(x);
-        //cmbSatuan.setEditable(x);
+        ComboIDBus.setEnabled(x);
         Combojenis.setEnabled(x);
         Textregion.setEditable(x);
         Textstujuan.setEditable(x);
@@ -151,6 +165,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
         Combojenis = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         Tableperjalanan = new javax.swing.JTable();
+        ComboIDBus = new javax.swing.JComboBox();
         Buttontambah = new javax.swing.JButton();
         Buttonsimpan = new javax.swing.JButton();
         Buttonkoreksi = new javax.swing.JButton();
@@ -199,6 +214,12 @@ public class ListPerjalanan extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(Tableperjalanan);
 
+        ComboIDBus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboIDBusActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -216,14 +237,18 @@ public class ListPerjalanan extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(Combojenis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Textkodejln, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Textregion, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Textharga, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Textnamabus, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Textstujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Textstujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(ComboIDBus, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(Textnamabus, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(Textregion, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(96, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -236,7 +261,8 @@ public class ListPerjalanan extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(Textnamabus, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Textnamabus, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ComboIDBus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -353,7 +379,6 @@ public class ListPerjalanan extends javax.swing.JFrame {
 
     private void ButtonsimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonsimpanActionPerformed
         String tKode=Textkodejln.getText();
-        String tNama=Textnamabus.getText();
         String tRegion=Textregion.getText();
         String tTujuan=Textstujuan.getText();
         
@@ -361,16 +386,17 @@ public class ListPerjalanan extends javax.swing.JFrame {
         try{
         if (edit==true)
                 {
-            stm.executeUpdate("update listPerjalanan set nm_bus='"+tNama+"',jenis='"+sJenis+"', region='"+tRegion+"',tujuan='"+tTujuan+"', harga="+hrg+" where kd_prjlnan='" + tKode + "'");
+            stm.executeUpdate("update listPerjalanan set nm_bus='"+sIDbus+"',jenis='"+sJenis+"', region='"+tRegion+"',tujuan='"+tTujuan+"', harga="+hrg+" where kd_prjlnan='" + tKode + "'");
                 }else
         {
-            stm.executeUpdate("INSERT into listPerjalanan VALUES('"+tKode+"','"+tNama+
+            stm.executeUpdate("INSERT into listPerjalanan VALUES('"+tKode+"','"+sIDbus+
                     "','"+sJenis+"','"+tRegion+"','"+tTujuan+"',"+hrg+")");
         }
          Tableperjalanan.setModel(new DefaultTableModel(dataTable,header));
         baca_data();
         aktif(false);
         setTombol(true); 
+        kosong();
     }catch(SQLException e) {
        JOptionPane.showMessageDialog(null, e);
  }
@@ -415,6 +441,13 @@ public class ListPerjalanan extends javax.swing.JFrame {
         //Membaca Item Yang Terpilih — > String
         sJenis = (String)cJenis.getSelectedItem();
     }//GEN-LAST:event_CombojenisActionPerformed
+
+    private void ComboIDBusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboIDBusActionPerformed
+        // TODO add your handling code here:
+        JComboBox cIDbus= (javax.swing.JComboBox)evt.getSource();
+        //Membaca Item Yang Terpilih — > String
+        sIDbus = (String)cIDbus.getSelectedItem();
+    }//GEN-LAST:event_ComboIDBusActionPerformed
 
     /**
      * @param args the command line arguments
@@ -473,6 +506,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
     private javax.swing.JButton Buttonkoreksi;
     private javax.swing.JButton Buttonsimpan;
     private javax.swing.JButton Buttontambah;
+    private javax.swing.JComboBox ComboIDBus;
     private javax.swing.JComboBox Combojenis;
     private javax.swing.JTable Tableperjalanan;
     private javax.swing.JTextField Textharga;
