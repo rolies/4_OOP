@@ -164,7 +164,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
 
         jLabel1.setText("Kode Perjalanan");
 
-        jLabel2.setText("Nama Bus");
+        jLabel2.setText("ID Bus");
 
         jLabel3.setText("Jenis");
 
