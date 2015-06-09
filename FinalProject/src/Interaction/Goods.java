@@ -6,6 +6,7 @@
 package Interaction;
 
 import java.sql.*;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -174,6 +175,11 @@ public class Goods extends javax.swing.JFrame {
         jLabel6.setText("Harga");
 
         Combojenis.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Economi", "AC", "Patas", "VIP" }));
+        Combojenis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CombojenisActionPerformed(evt);
+            }
+        });
 
         Tableperjalanan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -342,6 +348,7 @@ public class Goods extends javax.swing.JFrame {
         setTombol(false);
         kosong();
         Textkodejln.requestFocusInWindow();
+        edit = false;
     }//GEN-LAST:event_ButtontambahActionPerformed
 
     private void ButtonsimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonsimpanActionPerformed
@@ -354,8 +361,7 @@ public class Goods extends javax.swing.JFrame {
         try{
         if (edit==true)
                 {
-            stm.executeUpdate("update listPerjalanan set kd_prjlnan='"+tNama+"',jenis='"+sJenis+"',"
-            + ",region='"+tRegion+"',tujuan='"+tTujuan+"', harga="+hrg+" where kd_brg='" + tKode + "'");
+            stm.executeUpdate("update listPerjalanan set nm_bus='"+tNama+"',jenis='"+sJenis+"', region='"+tRegion+"',tujuan='"+tTujuan+"', harga="+hrg+" where kd_prjlnan='" + tKode + "'");
                 }else
         {
             stm.executeUpdate("INSERT into listPerjalanan VALUES('"+tKode+"','"+tNama+
@@ -371,10 +377,12 @@ public class Goods extends javax.swing.JFrame {
     }//GEN-LAST:event_ButtonsimpanActionPerformed
 
     private void ButtonhapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonhapusActionPerformed
-                 try{
+
+        try{
             String sql="delete from listPerjalanan where kd_prjlnan='" + Textkodejln.getText()+ "'";
             stm.executeUpdate(sql);
             baca_data();
+            kosong();
             }
             catch(SQLException e)
             {
@@ -401,6 +409,12 @@ public class Goods extends javax.swing.JFrame {
     private void TableperjalananMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableperjalananMouseClicked
         setField();
     }//GEN-LAST:event_TableperjalananMouseClicked
+
+    private void CombojenisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CombojenisActionPerformed
+        JComboBox cJenis= (javax.swing.JComboBox)evt.getSource();
+        //Membaca Item Yang Terpilih — > String
+        sJenis = (String)cJenis.getSelectedItem();
+    }//GEN-LAST:event_CombojenisActionPerformed
 
     /**
      * @param args the command line arguments
