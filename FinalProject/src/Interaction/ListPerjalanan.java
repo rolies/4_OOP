@@ -63,7 +63,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
         ComboIDBus.setSelectedItem((String)Tableperjalanan.getValueAt(row,1));
         Combojenis.setSelectedItem((String)Tableperjalanan.getValueAt(row,2));  
         TextWaktu.setText((String)Tableperjalanan.getValueAt(row,3));
-        Textstujuan.setText((String)Tableperjalanan.getValueAt(row,4)); 
+        TextTujuan.setText((String)Tableperjalanan.getValueAt(row,4)); 
         String harga=Double.toString((Double)Tableperjalanan.getValueAt(row,5));
         Textharga.setText(harga);
     }
@@ -98,9 +98,9 @@ public class ListPerjalanan extends javax.swing.JFrame {
             RsBrg.beforeFirst();
             while(RsBrg.next()) {
                 dataTable[x][0] = RsBrg.getString("kd_prjlnan");
-                dataTable[x][1] = RsBrg.getString("nm_bus");
-                dataTable[x][2] = RsBrg.getString("jenis");
-                dataTable[x][3] = RsBrg.getString("region");
+                dataTable[x][1] = RsBrg.getString("ID_bus");
+                dataTable[x][2] = RsBrg.getString("region");
+                dataTable[x][3] = RsBrg.getString("waktu");
                 dataTable[x][4] = RsBrg.getString("tujuan");
                 dataTable[x][5] = RsBrg.getDouble("harga");
                 x++;
@@ -117,7 +117,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
     {
         Textkodejln.setText("");
         TextWaktu.setText(""); 
-        Textstujuan.setText("");
+        TextTujuan.setText("");
         Textharga.setText("");
     }
     
@@ -127,7 +127,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
         ComboIDBus.setEnabled(x);
         Combojenis.setEnabled(x);
         TextWaktu.setEditable(x);
-        Textstujuan.setEditable(x);
+        TextTujuan.setEditable(x);
         Textharga.setEditable(x);
     }
     
@@ -158,7 +158,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         Textkodejln = new javax.swing.JTextField();
         TextWaktu = new javax.swing.JTextField();
-        Textstujuan = new javax.swing.JTextField();
+        TextTujuan = new javax.swing.JTextField();
         Textharga = new javax.swing.JTextField();
         Combojenis = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -236,7 +236,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
                     .addComponent(Combojenis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Textkodejln, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Textharga, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Textstujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TextTujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(ComboIDBus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(TextWaktu, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -268,7 +268,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(Textstujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(TextTujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
@@ -373,18 +373,18 @@ public class ListPerjalanan extends javax.swing.JFrame {
 
     private void ButtonsimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonsimpanActionPerformed
         String tKode=Textkodejln.getText();
-        String tRegion=TextWaktu.getText();
-        String tTujuan=Textstujuan.getText();
+        String tWaktu=TextWaktu.getText();
+        String tTujuan=TextTujuan.getText();
         
         double hrg=Double.parseDouble(Textharga.getText());
         try{
         if (edit==true)
                 {
-            stm.executeUpdate("update listPerjalanan set nm_bus='"+sIDbus+"',jenis='"+sRegion+"', region='"+tRegion+"',tujuan='"+tTujuan+"', harga="+hrg+" where kd_prjlnan='" + tKode + "'");
+            stm.executeUpdate("update listPerjalanan set ID_bus='"+sIDbus+"',region='"+sRegion+"', waktu='"+tWaktu+"',tujuan='"+tTujuan+"', harga="+hrg+" where kd_prjlnan='" + tKode + "'");
                 }else
         {
             stm.executeUpdate("INSERT into listPerjalanan VALUES('"+tKode+"','"+sIDbus+
-                    "','"+sRegion+"','"+tRegion+"','"+tTujuan+"',"+hrg+")");
+                    "','"+sRegion+"','"+tWaktu+"','"+tTujuan+"',"+hrg+")");
         }
          Tableperjalanan.setModel(new DefaultTableModel(dataTable,header));
         baca_data();
@@ -503,10 +503,10 @@ public class ListPerjalanan extends javax.swing.JFrame {
     private javax.swing.JComboBox ComboIDBus;
     private javax.swing.JComboBox Combojenis;
     private javax.swing.JTable Tableperjalanan;
+    private javax.swing.JTextField TextTujuan;
     private javax.swing.JTextField TextWaktu;
     private javax.swing.JTextField Textharga;
     private javax.swing.JTextField Textkodejln;
-    private javax.swing.JTextField Textstujuan;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
