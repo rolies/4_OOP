@@ -26,12 +26,12 @@ public class ListPerjalanan extends javax.swing.JFrame {
     
     Boolean ada = false;
     Boolean edit = false;
-    String sJenis;
+    String sRegion;
     String sIDbus;
     
     //private Object[][] Tablebarang =  null;
     private Object[][] dataTable = null;
-    private String[] header = {"Kode","ID Bus","Jenis","Region","Tujuan","Harga"};
+    private String[] header = {"Kode","ID Bus","Region","Waktu","Tujuan","Harga"};
 
     public ListPerjalanan() {
         initComponents();
@@ -62,7 +62,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
         Textkodejln.setText((String)Tableperjalanan.getValueAt(row,0));
         ComboIDBus.setSelectedItem((String)Tableperjalanan.getValueAt(row,1));
         Combojenis.setSelectedItem((String)Tableperjalanan.getValueAt(row,2));  
-        Textregion.setText((String)Tableperjalanan.getValueAt(row,3));
+        TextWaktu.setText((String)Tableperjalanan.getValueAt(row,3));
         Textstujuan.setText((String)Tableperjalanan.getValueAt(row,4)); 
         String harga=Double.toString((Double)Tableperjalanan.getValueAt(row,5));
         Textharga.setText(harga);
@@ -116,8 +116,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
     private void kosong()
     {
         Textkodejln.setText("");
-        Textnamabus.setText("");
-        Textregion.setText(""); 
+        TextWaktu.setText(""); 
         Textstujuan.setText("");
         Textharga.setText("");
     }
@@ -127,7 +126,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
         Textkodejln.setEditable(x);
         ComboIDBus.setEnabled(x);
         Combojenis.setEnabled(x);
-        Textregion.setEditable(x);
+        TextWaktu.setEditable(x);
         Textstujuan.setEditable(x);
         Textharga.setEditable(x);
     }
@@ -158,8 +157,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         Textkodejln = new javax.swing.JTextField();
-        Textnamabus = new javax.swing.JTextField();
-        Textregion = new javax.swing.JTextField();
+        TextWaktu = new javax.swing.JTextField();
         Textstujuan = new javax.swing.JTextField();
         Textharga = new javax.swing.JTextField();
         Combojenis = new javax.swing.JComboBox();
@@ -181,15 +179,15 @@ public class ListPerjalanan extends javax.swing.JFrame {
 
         jLabel2.setText("ID Bus");
 
-        jLabel3.setText("Jenis");
+        jLabel3.setText("Region");
 
-        jLabel4.setText("Region");
+        jLabel4.setText("Waktu");
 
         jLabel5.setText("Tujuan");
 
         jLabel6.setText("Harga");
 
-        Combojenis.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Economi", "AC", "Patas", "VIP" }));
+        Combojenis.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Jawa", "Sumatra", "Kalimantan", "Sulawesi", "Bali & Nt" }));
         Combojenis.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CombojenisActionPerformed(evt);
@@ -239,12 +237,9 @@ public class ListPerjalanan extends javax.swing.JFrame {
                     .addComponent(Textkodejln, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Textharga, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Textstujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(ComboIDBus, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(Textnamabus, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(Textregion, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(ComboIDBus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(TextWaktu, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(96, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
@@ -261,7 +256,6 @@ public class ListPerjalanan extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(Textnamabus, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ComboIDBus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -270,7 +264,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(Textregion, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(TextWaktu, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -363,7 +357,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
                     .addComponent(Buttonhapus)
                     .addComponent(Buttonbatal)
                     .addComponent(Buttonkeluar))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
@@ -379,18 +373,18 @@ public class ListPerjalanan extends javax.swing.JFrame {
 
     private void ButtonsimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonsimpanActionPerformed
         String tKode=Textkodejln.getText();
-        String tRegion=Textregion.getText();
+        String tRegion=TextWaktu.getText();
         String tTujuan=Textstujuan.getText();
         
         double hrg=Double.parseDouble(Textharga.getText());
         try{
         if (edit==true)
                 {
-            stm.executeUpdate("update listPerjalanan set nm_bus='"+sIDbus+"',jenis='"+sJenis+"', region='"+tRegion+"',tujuan='"+tTujuan+"', harga="+hrg+" where kd_prjlnan='" + tKode + "'");
+            stm.executeUpdate("update listPerjalanan set nm_bus='"+sIDbus+"',jenis='"+sRegion+"', region='"+tRegion+"',tujuan='"+tTujuan+"', harga="+hrg+" where kd_prjlnan='" + tKode + "'");
                 }else
         {
             stm.executeUpdate("INSERT into listPerjalanan VALUES('"+tKode+"','"+sIDbus+
-                    "','"+sJenis+"','"+tRegion+"','"+tTujuan+"',"+hrg+")");
+                    "','"+sRegion+"','"+tRegion+"','"+tTujuan+"',"+hrg+")");
         }
          Tableperjalanan.setModel(new DefaultTableModel(dataTable,header));
         baca_data();
@@ -437,9 +431,9 @@ public class ListPerjalanan extends javax.swing.JFrame {
     }//GEN-LAST:event_TableperjalananMouseClicked
 
     private void CombojenisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CombojenisActionPerformed
-        JComboBox cJenis= (javax.swing.JComboBox)evt.getSource();
+        JComboBox cRegion= (javax.swing.JComboBox)evt.getSource();
         //Membaca Item Yang Terpilih — > String
-        sJenis = (String)cJenis.getSelectedItem();
+        sRegion = (String)cRegion.getSelectedItem();
     }//GEN-LAST:event_CombojenisActionPerformed
 
     private void ComboIDBusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboIDBusActionPerformed
@@ -509,10 +503,9 @@ public class ListPerjalanan extends javax.swing.JFrame {
     private javax.swing.JComboBox ComboIDBus;
     private javax.swing.JComboBox Combojenis;
     private javax.swing.JTable Tableperjalanan;
+    private javax.swing.JTextField TextWaktu;
     private javax.swing.JTextField Textharga;
     private javax.swing.JTextField Textkodejln;
-    private javax.swing.JTextField Textnamabus;
-    private javax.swing.JTextField Textregion;
     private javax.swing.JTextField Textstujuan;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

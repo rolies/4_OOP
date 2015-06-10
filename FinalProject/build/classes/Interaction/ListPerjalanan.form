@@ -62,7 +62,7 @@
                   <Component id="Buttonbatal" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="Buttonkeluar" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="14" max="32767" attributes="0"/>
+              <EmptySpace pref="20" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -94,13 +94,9 @@
                       <Component id="Textkodejln" min="-2" pref="111" max="-2" attributes="0"/>
                       <Component id="Textharga" alignment="0" min="-2" pref="86" max="-2" attributes="0"/>
                       <Component id="Textstujuan" alignment="0" min="-2" pref="267" max="-2" attributes="0"/>
-                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="ComboIDBus" min="-2" pref="87" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="Textnamabus" min="-2" pref="23" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="Textregion" min="-2" pref="149" max="-2" attributes="0"/>
+                      <Group type="103" alignment="0" groupAlignment="1" attributes="0">
+                          <Component id="ComboIDBus" alignment="0" min="-2" pref="87" max="-2" attributes="0"/>
+                          <Component id="TextWaktu" min="-2" pref="149" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace pref="96" max="32767" attributes="0"/>
@@ -123,7 +119,6 @@
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="Textnamabus" alignment="3" min="-2" pref="33" max="-2" attributes="0"/>
                       <Component id="ComboIDBus" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -134,7 +129,7 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="Textregion" alignment="3" min="-2" pref="33" max="-2" attributes="0"/>
+                      <Component id="TextWaktu" alignment="3" min="-2" pref="33" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -166,12 +161,12 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Jenis"/>
+            <Property name="text" type="java.lang.String" value="Region"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel4">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Region"/>
+            <Property name="text" type="java.lang.String" value="Waktu"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
@@ -186,9 +181,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="Textkodejln">
         </Component>
-        <Component class="javax.swing.JTextField" name="Textnamabus">
-        </Component>
-        <Component class="javax.swing.JTextField" name="Textregion">
+        <Component class="javax.swing.JTextField" name="TextWaktu">
         </Component>
         <Component class="javax.swing.JTextField" name="Textstujuan">
         </Component>
@@ -197,11 +190,12 @@
         <Component class="javax.swing.JComboBox" name="Combojenis">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="Economi"/>
-                <StringItem index="1" value="AC"/>
-                <StringItem index="2" value="Patas"/>
-                <StringItem index="3" value="VIP"/>
+              <StringArray count="5">
+                <StringItem index="0" value="Jawa"/>
+                <StringItem index="1" value="Sumatra"/>
+                <StringItem index="2" value="Kalimantan"/>
+                <StringItem index="3" value="Sulawesi"/>
+                <StringItem index="4" value="Bali &amp; Nt"/>
               </StringArray>
             </Property>
           </Properties>
