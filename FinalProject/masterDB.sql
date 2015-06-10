@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 09, 2015 at 06:20 PM
+-- Generation Time: Jun 10, 2015 at 11:20 PM
 -- Server version: 5.6.24
 -- PHP Version: 5.6.8
 
@@ -52,9 +52,9 @@ INSERT INTO `listbus` (`kode`, `nm_bus`, `jmlh_Bus`, `jmlh_Bangku`) VALUES
 
 CREATE TABLE IF NOT EXISTS `listperjalanan` (
   `kd_prjlnan` varchar(10) NOT NULL,
-  `nm_bus` varchar(20) NOT NULL,
-  `jenis` varchar(15) NOT NULL,
-  `region` varchar(10) NOT NULL,
+  `ID_bus` varchar(20) NOT NULL,
+  `region` varchar(15) NOT NULL,
+  `waktu` varchar(10) NOT NULL,
   `tujuan` varchar(20) NOT NULL,
   `harga` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -63,10 +63,11 @@ CREATE TABLE IF NOT EXISTS `listperjalanan` (
 -- Dumping data for table `listperjalanan`
 --
 
-INSERT INTO `listperjalanan` (`kd_prjlnan`, `nm_bus`, `jenis`, `region`, `tujuan`, `harga`) VALUES
-('001', 'Sumber Kencono', 'Economi', 'Jateng', 'Madiun', 60000),
-('002', 'VVIP280', 'Patas', 'Sumatra', 'Palembang', 200000),
-('003', '02AC', 'Economi', 'sumatra', 'Lampung', 1000);
+INSERT INTO `listperjalanan` (`kd_prjlnan`, `ID_bus`, `region`, `waktu`, `tujuan`, `harga`) VALUES
+('001', '01VIP', 'Jawa', 'Siang', 'Madiun', 60000),
+('002', '02PTS', 'Sumatra', 'Malam', 'Palembang', 200000),
+('003', '02AC', 'Sumatra', 'Siang', 'Lampung', 300000),
+('004', '02AC', 'Kalimantan', 'Siang', 'Sampit', 300000);
 
 -- --------------------------------------------------------
 
