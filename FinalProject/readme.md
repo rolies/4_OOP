@@ -2,15 +2,9 @@
 
 ##Bus Ticketing
 ###Scenario
-Project: Library System 
-
-This  requirements  document  describes  the  requirements  of  our
-  library  system.  It 
-does not describe all the functionalities of a real  li
-brary system but only of subset 
-of them. 
+
 Introduction 
-There are 2 users of the system: patrons and librarians.
- Librarians can also be patrons. 
+There are 2 users of the system: Owner and Customer service. CS are responsible for Bus data, Route data and create transaction for ticket, and they don't have access to report and employee data, meanwhile an owner had access to all system, especially checking report and adding or deleting new employee/CS
+
 The objectives of the library system are to allow patr
 ons to:  
