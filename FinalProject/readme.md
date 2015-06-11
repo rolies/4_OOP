@@ -20,3 +20,8 @@ And owner to:
 * put a book on hold 
 
 ### Information to be contained in the System 
+
+
+### Integrity Constraints
+
+### Interactions with the System
