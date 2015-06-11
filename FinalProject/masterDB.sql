@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 10, 2015 at 11:20 PM
+-- Generation Time: Jun 11, 2015 at 04:56 PM
 -- Server version: 5.6.24
 -- PHP Version: 5.6.8
 
@@ -67,7 +67,50 @@ INSERT INTO `listperjalanan` (`kd_prjlnan`, `ID_bus`, `region`, `waktu`, `tujuan
 ('001', '01VIP', 'Jawa', 'Siang', 'Madiun', 60000),
 ('002', '02PTS', 'Sumatra', 'Malam', 'Palembang', 200000),
 ('003', '02AC', 'Sumatra', 'Siang', 'Lampung', 300000),
-('004', '02AC', 'Kalimantan', 'Siang', 'Sampit', 300000);
+('004', '02AC', 'Kalimantan', 'Siang', 'Sampit', 300000),
+('005', '01VIP', 'Sulawesi', 'Siang', 'Makassar', 500000),
+('006', '02PTS', 'Bali & Nt', 'Malam', 'Lombok', 450000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `listtransaksi`
+--
+
+CREATE TABLE IF NOT EXISTS `listtransaksi` (
+  `ID_trans` varchar(10) NOT NULL,
+  `waktu` varchar(10) NOT NULL,
+  `nm_customer` varchar(20) NOT NULL,
+  `contact` varchar(15) NOT NULL,
+  `total` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `listtransaksi`
+--
+
+INSERT INTO `listtransaksi` (`ID_trans`, `waktu`, `nm_customer`, `contact`, `total`) VALUES
+('1', '2015-6- 11', 'rolies', '085330', 300000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `listtransaksidetail`
+--
+
+CREATE TABLE IF NOT EXISTS `listtransaksidetail` (
+  `ID_trans` varchar(10) NOT NULL,
+  `ID_route` varchar(10) NOT NULL,
+  `no_bgku` int(3) NOT NULL,
+  `harga` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `listtransaksidetail`
+--
+
+INSERT INTO `listtransaksidetail` (`ID_trans`, `ID_route`, `no_bgku`, `harga`) VALUES
+('1', '003', 3, 300000);
 
 -- --------------------------------------------------------
 
@@ -98,6 +141,12 @@ INSERT INTO `login` (`id`, `user_id`, `name`, `password`) VALUES
 --
 ALTER TABLE `listbus`
   ADD PRIMARY KEY (`kode`);
+
+--
+-- Indexes for table `listtransaksi`
+--
+ALTER TABLE `listtransaksi`
+  ADD PRIMARY KEY (`ID_trans`);
 
 --
 -- Indexes for table `login`
