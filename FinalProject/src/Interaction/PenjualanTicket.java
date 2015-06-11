@@ -40,6 +40,8 @@ public class PenjualanTicket extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         open_db();
+        
+        inisialisasi_tabel();
         FillcomboID();
         kosong();
         
@@ -169,6 +171,29 @@ private void setField() {
 			System.out.println("Error : "+e);
 	}
 } 
+
+//method simpan transaksi penjualan pada table di MySql 
+private void simpan_transaksi() {
+	try{ 
+	String xTrans=TextIDtrans.getText(); 
+	format_tanggal(); 
+        String xNm_customer=TextnmCustomer.getText(); 
+        String xContact=TextContact.getText(); 
+        //Penghitung Total Belu, Di buat
+        double xHrgtot=300000;
+	//String xkode=cmbKd_Kons.getSelectedItem().toString(); 
+	String msql="insert into listTransaksi values('"+xTrans+"','"+tanggal+"', '"+xNm_customer+"', '"+xContact+"', "+xHrgtot+")"; stm.executeUpdate(msql);
+	for(int i=0;i<TabelTrans.getRowCount();i++) {
+		String xKd_route=(String)TabelTrans.getValueAt(i,0); 
+                //Comuting Nomer Bangku belum di buat
+                int xBgku = 3;
+		double xHrg=(Double)TabelTrans.getValueAt(i,3); 
+		String zsql="insert into listTransaksiDetail values('"+xTrans+"','"+xKd_route+"',"+xBgku+","+xHrg+")"; stm.executeUpdate(zsql);
+		}
+	} catch(SQLException e) {
+		System.out.println("Error : "+e);
+	}
+}
 //method membuat format tanggal sesuai dengan MySQL 
 private void format_tanggal() {
 	String DATE_FORMAT = "yyyy-MM-dd"; 
@@ -414,11 +439,11 @@ private void format_tanggal() {
                             .addComponent(ComboWaktu, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel2)
                             .addComponent(jLabel1)
-                            .addComponent(TextIDtrans, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Spinnertgl, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(TextIDtrans, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
+                            .addComponent(Spinnertgl))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -496,6 +521,7 @@ private void format_tanggal() {
 
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
         // TODO add your handling code here:
+        simpan_transaksi();
     }//GEN-LAST:event_btnSimpanActionPerformed
 
     private void ComboRegionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ComboRegionMouseClicked
