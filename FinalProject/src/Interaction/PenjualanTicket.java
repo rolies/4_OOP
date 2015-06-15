@@ -27,6 +27,7 @@ public class PenjualanTicket extends javax.swing.JFrame {
     String tanggal;
     String sKode;
     String sRegion;
+    String sTujuan;
     String nm_bus;
     /**
      * Creates new form PenjualanTicket
@@ -42,7 +43,6 @@ public class PenjualanTicket extends javax.swing.JFrame {
         open_db();
         
         inisialisasi_tabel();
-        FillcomboID();
         kosong();
         
         
@@ -59,10 +59,10 @@ public class PenjualanTicket extends javax.swing.JFrame {
         }
     private void FillcomboID(){
 	try {
-		String sql = "select * from listPerjalanan";
+		String sql = "select * from listPerjalanan where tujuan='"+sTujuan+"'";
 		pst=con.prepareStatement(sql);
 		RsBrg=pst.executeQuery();
-		
+		ComboID.removeAllItems();
 		while(RsBrg.next()){
 			String kode = RsBrg.getString("kd_prjlnan");
 			ComboID.addItem(kode);
@@ -77,7 +77,7 @@ public class PenjualanTicket extends javax.swing.JFrame {
         try{ 
             stm=con.createStatement(); 
             ResultSet rs=stm.executeQuery("select * from listPerjalanan where kd_prjlnan='"+xkode+"'");
-            rs.beforeFirst();
+            rs.beforeFirst(); 
             while(rs.next()) { 
                 nm_bus = rs.getString(2); 
                 TextTujuan.setText(rs.getString(5).trim()); 
@@ -275,6 +275,22 @@ private void format_tanggal() {
 
         jPanel2.setBackground(new java.awt.Color(106, 248, 131));
 
+        ComboID.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                ComboIDFocusGained(evt);
+            }
+        });
+        ComboID.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ComboIDMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                ComboIDMouseEntered(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                ComboIDMousePressed(evt);
+            }
+        });
         ComboID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ComboIDActionPerformed(evt);
@@ -410,6 +426,12 @@ private void format_tanggal() {
             }
         });
 
+        ComboTujuan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboTujuanActionPerformed(evt);
+            }
+        });
+
         jLabel6.setText("Tujuan");
 
         jLabel7.setText("Waktu");
@@ -508,7 +530,7 @@ private void format_tanggal() {
         JComboBox cRegion= (javax.swing.JComboBox)evt.getSource();
         sKode = (String)cRegion.getSelectedItem();
         detail_bis(sKode);
-        
+        System.out.println(sTujuan);
     }//GEN-LAST:event_ComboIDActionPerformed
 
     private void ComboRegionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboRegionActionPerformed
@@ -516,7 +538,7 @@ private void format_tanggal() {
         JComboBox cRegion= (javax.swing.JComboBox)evt.getSource();
         //Membaca Item Yang Terpilih — > String
         sRegion = (String)cRegion.getSelectedItem();
-        filter_region(sRegion);        
+        filter_region(sRegion);
     }//GEN-LAST:event_ComboRegionActionPerformed
 
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
@@ -535,9 +557,36 @@ private void format_tanggal() {
     }//GEN-LAST:event_btnNewActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        // TODO add your handling code here:
+
         setField();
     }//GEN-LAST:event_btnAddActionPerformed
+
+    private void ComboTujuanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboTujuanActionPerformed
+        // TODO add your handling code here:
+        JComboBox cTujuan = (javax.swing.JComboBox)evt.getSource();
+        sTujuan = (String)cTujuan.getSelectedItem();
+        FillcomboID();
+        TextnmBus.setText("");
+        TextHarga.setText("");
+        TextTujuan.setText("");
+    }//GEN-LAST:event_ComboTujuanActionPerformed
+
+    private void ComboIDMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ComboIDMousePressed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_ComboIDMousePressed
+
+    private void ComboIDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ComboIDFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboIDFocusGained
+
+    private void ComboIDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ComboIDMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboIDMouseClicked
+
+    private void ComboIDMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ComboIDMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboIDMouseEntered
 
     /**
      * @param args the command line arguments
