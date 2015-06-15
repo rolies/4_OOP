@@ -322,7 +322,7 @@ public class ListBus extends javax.swing.JFrame {
         try{
             if (edit==true)
             {
-                stm.executeUpdate("update listBus set nm_bus='"+tNama+"',jmlh_Bus="+tJmlhBus+", jmlh_Bangku='"+tJmlhBangku+" where kode='" + tKode + "'");
+                stm.executeUpdate("update listBus set nm_bus='"+tNama+"',jmlh_Bus="+tJmlhBus+", jmlh_Bangku="+tJmlhBangku+" where kode='" +tKode+ "'");
             }else
             {
                 stm.executeUpdate("INSERT into listBus VALUES('"+tKode+"','"+tNama+

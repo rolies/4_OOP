@@ -40,9 +40,8 @@ public class PenjualanTicket extends javax.swing.JFrame {
     public PenjualanTicket() {
         initComponents();
         setLocationRelativeTo(null);
-        open_db();
-        
-        inisialisasi_tabel();
+        open_db(); 
+        setTombol(true);
         kosong();
         
         
@@ -115,7 +114,8 @@ public class PenjualanTicket extends javax.swing.JFrame {
     
      private void kosong()
     {
-        
+        DefaultTableModel model = (DefaultTableModel) TabelTrans.getModel();
+        model.setRowCount(0);
         ComboID.setSelectedIndex(-1);
         ComboWaktu.setSelectedIndex(-1);
         ComboRegion.setSelectedIndex(-1);
@@ -124,7 +124,7 @@ public class PenjualanTicket extends javax.swing.JFrame {
         TextnmBus.setText("");
         TextHarga.setText("");
    }
-     
+    
      private void aktif(boolean x) {
         ComboID.setEnabled(x); 
         ComboRegion.setEnabled(x); 
@@ -133,7 +133,8 @@ public class PenjualanTicket extends javax.swing.JFrame {
      private void setTombol(boolean t) {
         btnNew.setEnabled(t); 
         btnSimpan.setEnabled(!t); 
-        btnBatal.setEnabled(!t); 
+        btnBatal.setEnabled(!t);
+        btnCetak.setEnabled(!t);
         btnKeluar.setEnabled(t); 
         //btnHapus.setEnabled(!t);
 }
@@ -332,6 +333,11 @@ private void format_tanggal() {
         });
 
         btnBatal.setText("Batal");
+        btnBatal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBatalActionPerformed(evt);
+            }
+        });
 
         btnCetak.setText("Cetak");
 
@@ -345,6 +351,11 @@ private void format_tanggal() {
         });
 
         jButton2.setText("Delete");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -366,10 +377,10 @@ private void format_tanggal() {
                             .addComponent(btnNew)
                             .addGap(18, 18, 18)
                             .addComponent(btnSimpan)
-                            .addGap(18, 18, 18)
-                            .addComponent(btnBatal)
-                            .addGap(18, 18, 18)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(btnCetak)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(btnBatal)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnKeluar))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 616, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -553,6 +564,7 @@ private void format_tanggal() {
 
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
         // TODO add your handling code here:
+        setTombol(false);
         nomor_trans();
     }//GEN-LAST:event_btnNewActionPerformed
 
@@ -587,6 +599,20 @@ private void format_tanggal() {
     private void ComboIDMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ComboIDMouseEntered
         // TODO add your handling code here:
     }//GEN-LAST:event_ComboIDMouseEntered
+
+    private void btnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBatalActionPerformed
+        // TODO add your handling code here:
+        setTombol(true);
+    }//GEN-LAST:event_btnBatalActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) this.TabelTrans.getModel();
+        int[] rows = TabelTrans.getSelectedRows();
+        for(int i=0;i<rows.length;i++){
+          model.removeRow(rows[i]-i);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
