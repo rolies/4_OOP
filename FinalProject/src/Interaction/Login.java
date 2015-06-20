@@ -140,7 +140,7 @@ public class Login extends javax.swing.JFrame {
                 baris = RsUser.getRow();
             }
                 if (baris == 1){
-                    JOptionPane.showMessageDialog(null, "User dan password cocok");
+                   
                     dispose();
                     new fromMenu().setVisible(true);
                 }
