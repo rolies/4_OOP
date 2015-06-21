@@ -421,6 +421,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
 
     private void ButtonkeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonkeluarActionPerformed
         dispose();
+        new fromMenu().setVisible(true);
     }//GEN-LAST:event_ButtonkeluarActionPerformed
 
     private void TableperjalananMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableperjalananMouseClicked

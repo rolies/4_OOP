@@ -481,6 +481,7 @@ private void format_tanggal() {
     private void btnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKeluarActionPerformed
         // TODO add your handling code here:
         dispose();
+        new fromMenu().setVisible(true);
     }//GEN-LAST:event_btnKeluarActionPerformed
 
     private void ComboIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboIDActionPerformed

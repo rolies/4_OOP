@@ -303,6 +303,7 @@ public class ListBus extends javax.swing.JFrame {
 
     private void ButtonkeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonkeluarActionPerformed
         dispose();
+        new fromMenu().setVisible(true);
     }//GEN-LAST:event_ButtonkeluarActionPerformed
 
     private void ButtontambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtontambahActionPerformed
