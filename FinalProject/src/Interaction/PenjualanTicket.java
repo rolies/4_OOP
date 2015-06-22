@@ -35,7 +35,7 @@ public class PenjualanTicket extends javax.swing.JFrame {
      */
     DefaultTableModel tableModel = new DefaultTableModel(
             new Object [][] {}, 
-            new String [] { "ID Bus", "Nama Bus","Tujuan","Harga" 
+            new String [] { "ID Bus", "Jenis","Harga" 
             }); 
     
     public PenjualanTicket() {
@@ -46,7 +46,6 @@ public class PenjualanTicket extends javax.swing.JFrame {
         setTombol(true);
         kosong();
         inisialisasi_tabel();
-        
         Spinnertgl.setEditor(new JSpinner.DateEditor(Spinnertgl, "yyyy/MM/dd")); 
     }
     private void open_db(){       
@@ -80,14 +79,9 @@ public class PenjualanTicket extends javax.swing.JFrame {
             ResultSet rs=stm.executeQuery("select * from listPerjalanan where kd_prjlnan='"+xkode+"'");
             rs.beforeFirst(); 
             while(rs.next()) {  
-                TextTujuan.setText(rs.getString(5).trim()); 
-                TextHarga.setText(Double.toString((Double)rs.getDouble(6)));
+                // Masukkan Combobox jenis 
+                TextHarga.setText(Double.toString((Double)rs.getDouble(5)));
                 stm=con.createStatement(); 
-                ResultSet rn=stm.executeQuery("select * from listBus where kode='"+nm_bus+"'");
-                rn.beforeFirst();
-                while(rn.next()) { 
-                    TextnmBus.setText(rn.getString(2).trim());
-                }rn.close(); 
             } 
             rs.close(); 
         } catch(SQLException e) {
@@ -119,8 +113,7 @@ public class PenjualanTicket extends javax.swing.JFrame {
         model.setRowCount(0);
         ComboID.setSelectedIndex(-1);
         ComboRegion.setSelectedIndex(-1);
-        TextTujuan.setText("");
-        TextnmBus.setText("");
+        ComboJns.setSelectedIndex(-1);
         TextHarga.setText("");
         TextnmCustomer.setText("");
         TextContact.setText("");
@@ -134,6 +127,12 @@ public class PenjualanTicket extends javax.swing.JFrame {
         ComboRegion.setEnabled(x); 
         Spinnertgl.setEnabled(x); 
 }
+     private void tampilBgk(boolean b){
+         btnTutup.setVisible(!b);
+         btnBangku.setVisible(b);
+         jPanel1.setVisible(!b);
+         jPanel2.setVisible(b);
+     }
      private void setTombol(boolean t) {
         btnNew.setEnabled(t); 
         btnSimpan.setEnabled(!t); 
@@ -167,10 +166,9 @@ public class PenjualanTicket extends javax.swing.JFrame {
 private void setField() {
 	try { 
 		String tKode=ComboID.getSelectedItem().toString(); 
-		String tNama=TextnmBus.getText();
-                String tTujuan=TextTujuan.getText();
+		String tJenis=ComboJns.getSelectedItem().toString(); 
 		double hrg=Double.parseDouble(TextHarga.getText()); 
-		tableModel.addRow(new Object[]{tKode,tNama,tTujuan,hrg}); 
+		tableModel.addRow(new Object[]{tKode,tJenis,hrg}); 
 		inisialisasi_tabel(); 
 	} catch(Exception e) {
 			System.out.println("Error : "+e);
@@ -180,21 +178,49 @@ private void hitung_total() {
     double tot = 0;
     for(int i=0;i<TabelTrans.getRowCount();i++) {
         
-        tot = tot+(Double)TabelTrans.getValueAt(i,3);
+        tot = tot+(Double)TabelTrans.getValueAt(i,2);
         TextTotal.setText(Double.toString(tot));
     }
 }
+private void checkBgku(){
+    if ("-1".equals(ecoBgk.getText())){
+        ecoBgk.setForeground(Color.red);
+    } else {
+        ecoBgk.setForeground(Color.white);
+        ComboJns.addItem("Eco");
+    }
+    if ("-1".equals(vipBgk.getText())){            
+        vipBgk.setForeground(Color.red);
+    } else {
+        vipBgk.setForeground(Color.white);
+        ComboJns.addItem("Vip");
+    }
+    if ("-1".equals(acBgk.getText())) {
+        acBgk.setForeground(Color.red);
+    } else {
+        acBgk.setForeground(Color.white);
+         ComboJns.addItem("Ac");
+    }
+    if ("-1".equals(ptsBgk.getText())){
+        ptsBgk.setForeground(Color.red);
+    }else {
+        ptsBgk.setForeground(Color.white);
+        ComboJns.addItem("Pts");
+    }
+}
+
 private void checking(){
-    System.out.println(sTujuan);
     try{ 
             stm=con.createStatement(); 
             ResultSet rfr=stm.executeQuery("select * from listbangku where tujuan='"+sTujuan+"'");
             rfr.beforeFirst();
+            ComboJns.removeAllItems();
             while(rfr.next()) {  
                 ecoBgk.setText(rfr.getString(2).trim());
                 vipBgk.setText(rfr.getString(3).trim());
                 acBgk.setText(rfr.getString(4).trim());
                 ptsBgk.setText(rfr.getString(5).trim());
+                checkBgku();
                 } 
             rfr.close(); 
         } catch(SQLException e) {
@@ -264,24 +290,23 @@ private void format_tanggal() {
         jLayeredPane1 = new javax.swing.JLayeredPane();
         jPanel3 = new javax.swing.JPanel();
         ComboID = new javax.swing.JComboBox();
-        TextTujuan = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         TabelTrans = new javax.swing.JTable();
         btnSimpan = new javax.swing.JButton();
         btnKeluar = new javax.swing.JButton();
-        TextnmBus = new javax.swing.JTextField();
-        TextHarga = new javax.swing.JTextField();
         btnBatal = new javax.swing.JButton();
         btnCetak = new javax.swing.JButton();
         TextTotal = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        btnAdd = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         TextBayar = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         TextKembali = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
+        ComboJns = new javax.swing.JComboBox();
+        TextHarga = new javax.swing.JTextField();
+        btnAdd = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         vipBgk = new javax.swing.JLabel();
@@ -383,18 +408,17 @@ private void format_tanggal() {
                 ComboIDActionPerformed(evt);
             }
         });
-        jPanel3.add(ComboID, new org.netbeans.lib.awtextra.AbsoluteConstraints(24, 13, 96, 28));
-        jPanel3.add(TextTujuan, new org.netbeans.lib.awtextra.AbsoluteConstraints(324, 11, 155, 32));
+        jPanel3.add(ComboID, new org.netbeans.lib.awtextra.AbsoluteConstraints(24, 13, 130, 28));
 
         TabelTrans.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Title 1", "Title 2", "Title 3"
             }
         ));
         jScrollPane1.setViewportView(TabelTrans);
@@ -416,8 +440,6 @@ private void format_tanggal() {
             }
         });
         jPanel3.add(btnKeluar, new org.netbeans.lib.awtextra.AbsoluteConstraints(567, 287, 73, 39));
-        jPanel3.add(TextnmBus, new org.netbeans.lib.awtextra.AbsoluteConstraints(163, 11, 143, 32));
-        jPanel3.add(TextHarga, new org.netbeans.lib.awtextra.AbsoluteConstraints(497, 11, 143, 32));
 
         btnBatal.setText("Batal");
         btnBatal.addActionListener(new java.awt.event.ActionListener() {
@@ -438,14 +460,6 @@ private void format_tanggal() {
 
         jLabel8.setText("Total");
         jPanel3.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(438, 185, -1, -1));
-
-        btnAdd.setText("Add");
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
-            }
-        });
-        jPanel3.add(btnAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 50, -1, -1));
 
         jButton2.setText("Delete");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -471,15 +485,58 @@ private void format_tanggal() {
 
         jPanel2.setBackground(new java.awt.Color(59, 175, 218));
 
+        ComboJns.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                ComboJnsFocusGained(evt);
+            }
+        });
+        ComboJns.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ComboJnsMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                ComboJnsMouseEntered(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                ComboJnsMousePressed(evt);
+            }
+        });
+        ComboJns.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboJnsActionPerformed(evt);
+            }
+        });
+
+        btnAdd.setText("Add");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 670, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(174, 174, 174)
+                .addComponent(ComboJns, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(TextHarga, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
+                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(43, 43, 43))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 60, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(17, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ComboJns, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(TextHarga, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         jPanel3.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 670, 60));
@@ -572,23 +629,23 @@ private void format_tanggal() {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(40, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel16)
                         .addComponent(ecoBgk)
                         .addComponent(ecoWkt))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel22)
+                        .addComponent(ptsBgk)
+                        .addComponent(ptsWkt))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel19)
+                        .addComponent(acBgk)
+                        .addComponent(acWkt))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel11)
                         .addComponent(vipBgk)
-                        .addComponent(vipWkt)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel19)
-                            .addComponent(acBgk)
-                            .addComponent(acWkt)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel22)
-                                .addComponent(ptsBgk)
-                                .addComponent(ptsWkt)))))
+                        .addComponent(vipWkt)))
                 .addGap(34, 34, 34))
         );
 
@@ -708,9 +765,7 @@ private void format_tanggal() {
         JComboBox cTujuan = (javax.swing.JComboBox)evt.getSource();
         sTujuan = (String)cTujuan.getSelectedItem();
         FillcomboID();
-        TextnmBus.setText("");
-        TextHarga.setText("");
-        TextTujuan.setText("");
+        checking(); 
     }//GEN-LAST:event_ComboTujuanActionPerformed
 
     private void TextBayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TextBayarActionPerformed
@@ -783,24 +838,41 @@ private void format_tanggal() {
 
     private void btnBangkuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBangkuActionPerformed
         // TODO add your handling code here:
-        btnTutup.setVisible(true);
-        checking();
+        tampilBgk(false);
         jLayeredPane1.moveToFront(jPanel1);
-        System.out.println(jLayeredPane1.getLayer(jPanel1));
-        System.out.println(jLayeredPane1.getLayer(jPanel3));
-        
+        ComboJns.removeAllItems();
+        checking(); 
     }//GEN-LAST:event_btnBangkuActionPerformed
 
     private void btnTutupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTutupActionPerformed
         // TODO add your handling code here:
-        jLayeredPane1.moveToBack(jPanel1);
-        btnTutup.setVisible(false);
+        tampilBgk(true);
     }//GEN-LAST:event_btnTutupActionPerformed
 
     private void btnBangkuMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBangkuMouseEntered
         // TODO add your handling code here:
 
     }//GEN-LAST:event_btnBangkuMouseEntered
+
+    private void ComboJnsFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ComboJnsFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboJnsFocusGained
+
+    private void ComboJnsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ComboJnsMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboJnsMouseClicked
+
+    private void ComboJnsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ComboJnsMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboJnsMouseEntered
+
+    private void ComboJnsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ComboJnsMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboJnsMousePressed
+
+    private void ComboJnsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboJnsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboJnsActionPerformed
 
     /**
      * @param args the command line arguments
@@ -840,6 +912,7 @@ private void format_tanggal() {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox ComboID;
+    private javax.swing.JComboBox ComboJns;
     private javax.swing.JComboBox ComboRegion;
     private javax.swing.JComboBox ComboTujuan;
     private javax.swing.JSpinner Spinnertgl;
@@ -850,8 +923,6 @@ private void format_tanggal() {
     private javax.swing.JTextField TextIDtrans;
     private javax.swing.JTextField TextKembali;
     private javax.swing.JTextField TextTotal;
-    private javax.swing.JTextField TextTujuan;
-    private javax.swing.JTextField TextnmBus;
     private javax.swing.JTextField TextnmCustomer;
     private javax.swing.JLabel acBgk;
     private javax.swing.JLabel acWkt;

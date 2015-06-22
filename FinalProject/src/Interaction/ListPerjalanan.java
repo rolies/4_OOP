@@ -47,6 +47,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
         baca_data();
         aktif(false);
         setTombol(true);
+        Combojenis.setSelectedIndex(-1);
     }
 
     private void setField()
@@ -139,6 +140,10 @@ public class ListPerjalanan extends javax.swing.JFrame {
         TextWaktu.setText(""); 
         TextTujuan.setText("");
         Textharga.setText("");
+        checkAc.setSelected(false);
+        checkEco.setSelected(false);
+        checkPatas.setSelected(false);
+        checkVip.setSelected(false);
     }
     
     private void aktif(boolean x)
@@ -434,7 +439,9 @@ public class ListPerjalanan extends javax.swing.JFrame {
 
         try{
             String sql="delete from listPerjalanan where kd_prjlnan='" + Textkodejln.getText()+ "'";
+            String sql1="delete from listbangku where tujuan='" + TextTujuan.getText()+ "'";
             stm.executeUpdate(sql);
+            stm.executeUpdate(sql1);
             baca_data();
             kosong();
             }
