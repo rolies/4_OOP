@@ -37,7 +37,32 @@ public class Login extends javax.swing.JFrame {
      }catch (Exception e) {
          System.out.println("Error: "+e);
      }
-        
+    }
+    
+    private void loginMaseter() {
+        try {
+            char[] input = PasswordFiel.getPassword();
+            String pass;
+            pass = new String(PasswordFiel.getPassword());
+            
+            stm = Con.createStatement();
+            RsUser = stm.executeQuery("select * from Login where user_id = '"+TextFieldUser.getText()+
+                    "' and password=md5 ('"+pass+"')");
+            int baris=0;
+            while(RsUser.next()){
+                baris = RsUser.getRow();
+            }
+                if (baris == 1){
+                   
+                    dispose();
+                    new fromMenu().setVisible(true);
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "User dan Password tidak cocok --> "+TextFieldUser.getText());
+                }
+        }catch(SQLException note) {
+            JOptionPane.showMessageDialog(null, note);
+        }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -76,6 +101,12 @@ public class Login extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
         jLabel2.setText("Password");
+
+        PasswordFiel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PasswordFielActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -127,30 +158,13 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonBatal1ActionPerformed
 
     private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoginActionPerformed
-        try {
-            char[] input = PasswordFiel.getPassword();
-            String pass;
-            pass = new String(PasswordFiel.getPassword());
-            
-            stm = Con.createStatement();
-            RsUser = stm.executeQuery("select * from Login where user_id = '"+TextFieldUser.getText()+
-                    "' and password=md5 ('"+pass+"')");
-            int baris=0;
-            while(RsUser.next()){
-                baris = RsUser.getRow();
-            }
-                if (baris == 1){
-                   
-                    dispose();
-                    new fromMenu().setVisible(true);
-                }
-                else {
-                    JOptionPane.showMessageDialog(null, "User dan Password tidak cocok --> "+TextFieldUser.getText());
-                }
-        }catch(SQLException note) {
-            JOptionPane.showMessageDialog(null, note);
-        }
+        loginMaseter();
     }//GEN-LAST:event_jButtonLoginActionPerformed
+
+    private void PasswordFielActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordFielActionPerformed
+        // TODO add your handling code here:
+        loginMaseter();
+    }//GEN-LAST:event_PasswordFielActionPerformed
 
     /**
      * @param args the command line arguments

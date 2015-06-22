@@ -6,8 +6,12 @@
 package Interaction;
 
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -28,10 +32,13 @@ public class ListPerjalanan extends javax.swing.JFrame {
     Boolean edit = false;
     String sRegion;
     String sIDbus;
-    
+    String bgkEco;
+    String bgkVip;
+    String bgkAc;
+    String bgkPts;
     //private Object[][] Tablebarang =  null;
     private Object[][] dataTable = null;
-    private String[] header = {"Kode","ID Bus","Region","Waktu","Tujuan","Harga"};
+    private String[] header = {"Kode","Region","Waktu","Tujuan","Harga"};
 
     public ListPerjalanan() {
         initComponents();
@@ -40,31 +47,16 @@ public class ListPerjalanan extends javax.swing.JFrame {
         baca_data();
         aktif(false);
         setTombol(true);
-        Fillcombo();
     }
-    private void Fillcombo(){
-	try {
-		String sql = "select * from listBus";
-		pst=con.prepareStatement(sql);
-		RsBrg=pst.executeQuery();
-		
-		while(RsBrg.next()){
-			String kode = RsBrg.getString("kode");
-			ComboIDBus.addItem(kode);
-		}
-	}catch(Exception e){
-	JOptionPane.showMessageDialog(null, e); 
-                }
-}
+
     private void setField()
     {
         int row=Tableperjalanan.getSelectedRow();
         Textkodejln.setText((String)Tableperjalanan.getValueAt(row,0));
-        ComboIDBus.setSelectedItem((String)Tableperjalanan.getValueAt(row,1));
-        Combojenis.setSelectedItem((String)Tableperjalanan.getValueAt(row,2));  
-        TextWaktu.setText((String)Tableperjalanan.getValueAt(row,3));
-        TextTujuan.setText((String)Tableperjalanan.getValueAt(row,4)); 
-        String harga=Double.toString((Double)Tableperjalanan.getValueAt(row,5));
+        Combojenis.setSelectedItem((String)Tableperjalanan.getValueAt(row,1));  
+        TextWaktu.setText((String)Tableperjalanan.getValueAt(row,2));
+        TextTujuan.setText((String)Tableperjalanan.getValueAt(row,3)); 
+        String harga=Double.toString((Double)Tableperjalanan.getValueAt(row,4));
         Textharga.setText(harga);
     }
     
@@ -80,8 +72,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
     }
     
         
-            private void baca_data()
-    {
+     private void baca_data(){
         try{
             stm = con.createStatement();
             RsBrg = stm.executeQuery("select * from listPerjalanan");
@@ -98,11 +89,10 @@ public class ListPerjalanan extends javax.swing.JFrame {
             RsBrg.beforeFirst();
             while(RsBrg.next()) {
                 dataTable[x][0] = RsBrg.getString("kd_prjlnan");
-                dataTable[x][1] = RsBrg.getString("ID_bus");
-                dataTable[x][2] = RsBrg.getString("region");
-                dataTable[x][3] = RsBrg.getString("waktu");
-                dataTable[x][4] = RsBrg.getString("tujuan");
-                dataTable[x][5] = RsBrg.getDouble("harga");
+                dataTable[x][1] = RsBrg.getString("region");
+                dataTable[x][2] = RsBrg.getString("waktu");
+                dataTable[x][3] = RsBrg.getString("tujuan");
+                dataTable[x][4] = RsBrg.getDouble("harga");
                 x++;
             }
             Tableperjalanan.setModel(new DefaultTableModel(dataTable,header));        
@@ -112,7 +102,37 @@ public class ListPerjalanan extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-            
+    public void typeCheck()  {
+        try{ 
+            stm=con.createStatement(); 
+            ResultSet rfr=stm.executeQuery("select * from listBus where kode='eco'");
+            rfr.beforeFirst();
+            while(rfr.next()) {
+               if (checkEco.isSelected())
+                   bgkEco = (rfr.getString(4).trim());
+               else
+                   bgkEco = "-1";
+               if (checkVip.isSelected()){
+                   bgkVip = "30";
+               }
+               else
+                   bgkVip = "-1";
+               if (checkAc.isSelected())
+                   bgkAc = "35";
+               else
+                   bgkAc = "-1";
+               if (checkPatas.isSelected())
+                   bgkPts = "40";
+               else
+                   bgkPts = "-1";
+                } 
+            rfr.close(); 
+        } catch(SQLException e) {
+        System.out.println("Error : "+e);
+        }  
+    }
+    
+    
     private void kosong()
     {
         Textkodejln.setText("");
@@ -124,7 +144,6 @@ public class ListPerjalanan extends javax.swing.JFrame {
     private void aktif(boolean x)
     {
         Textkodejln.setEditable(x);
-        ComboIDBus.setEnabled(x);
         Combojenis.setEnabled(x);
         TextWaktu.setEditable(x);
         TextTujuan.setEditable(x);
@@ -151,7 +170,6 @@ public class ListPerjalanan extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -161,7 +179,10 @@ public class ListPerjalanan extends javax.swing.JFrame {
         TextTujuan = new javax.swing.JTextField();
         Textharga = new javax.swing.JTextField();
         Combojenis = new javax.swing.JComboBox();
-        ComboIDBus = new javax.swing.JComboBox();
+        checkEco = new javax.swing.JCheckBox();
+        checkVip = new javax.swing.JCheckBox();
+        checkAc = new javax.swing.JCheckBox();
+        checkPatas = new javax.swing.JCheckBox();
         Buttontambah = new javax.swing.JButton();
         Buttonsimpan = new javax.swing.JButton();
         Buttonkoreksi = new javax.swing.JButton();
@@ -176,8 +197,6 @@ public class ListPerjalanan extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(158, 227, 228));
 
         jLabel1.setText("Kode Perjalanan");
-
-        jLabel2.setText("ID Bus");
 
         jLabel3.setText("Region");
 
@@ -194,11 +213,18 @@ public class ListPerjalanan extends javax.swing.JFrame {
             }
         });
 
-        ComboIDBus.addActionListener(new java.awt.event.ActionListener() {
+        checkEco.setText("Economi");
+        checkEco.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ComboIDBusActionPerformed(evt);
+                checkEcoActionPerformed(evt);
             }
         });
+
+        checkVip.setText("VIP");
+
+        checkAc.setText("AC");
+
+        checkPatas.setText("Patas");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -208,21 +234,28 @@ public class ListPerjalanan extends javax.swing.JFrame {
                 .addGap(23, 23, 23)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2)
                     .addComponent(jLabel4)
                     .addComponent(jLabel5)
                     .addComponent(jLabel6)
-                    .addComponent(jLabel3))
-                .addGap(28, 28, 28)
+                    .addComponent(jLabel3)
+                    .addComponent(checkEco))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Combojenis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Textkodejln, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Textharga, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(ComboIDBus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(TextWaktu, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(TextTujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Combojenis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Textkodejln, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Textharga, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(TextWaktu, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(TextTujuan, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(checkVip)
+                        .addGap(18, 18, 18)
+                        .addComponent(checkAc)
+                        .addGap(18, 18, 18)
+                        .addComponent(checkPatas)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -231,10 +264,6 @@ public class ListPerjalanan extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Textkodejln, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(ComboIDBus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -250,8 +279,14 @@ public class ListPerjalanan extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(Textharga, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(Textharga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(checkEco)
+                    .addComponent(checkVip)
+                    .addComponent(checkAc)
+                    .addComponent(checkPatas))
+                .addGap(18, 18, 18))
         );
 
         Buttontambah.setText("Tambah");
@@ -296,15 +331,16 @@ public class ListPerjalanan extends javax.swing.JFrame {
             }
         });
 
+        Tableperjalanan.setFont(new java.awt.Font("Nirmala UI", 0, 12)); // NOI18N
         Tableperjalanan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "", "", "", "", "", ""
+                "", "", "", "", ""
             }
         ));
         Tableperjalanan.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -323,8 +359,9 @@ public class ListPerjalanan extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(26, 26, 26)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addGap(15, 15, 15))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(Buttontambah)
                         .addGap(18, 18, 18)
@@ -335,7 +372,7 @@ public class ListPerjalanan extends javax.swing.JFrame {
                         .addComponent(Buttonkoreksi)
                         .addGap(18, 18, 18)
                         .addComponent(Buttonbatal)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 429, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 398, Short.MAX_VALUE)
                         .addComponent(Buttonkeluar)))
                 .addContainerGap())
         );
@@ -372,16 +409,16 @@ public class ListPerjalanan extends javax.swing.JFrame {
         String tKode=Textkodejln.getText();
         String tWaktu=TextWaktu.getText();
         String tTujuan=TextTujuan.getText();
-        
+        typeCheck();
         double hrg=Double.parseDouble(Textharga.getText());
         try{
         if (edit==true)
                 {
-            stm.executeUpdate("update listPerjalanan set ID_bus='"+sIDbus+"',region='"+sRegion+"', waktu='"+tWaktu+"',tujuan='"+tTujuan+"', harga="+hrg+" where kd_prjlnan='" + tKode + "'");
+            stm.executeUpdate("update listPerjalanan set region='"+sRegion+"', waktu='"+tWaktu+"',tujuan='"+tTujuan+"', harga="+hrg+" where kd_prjlnan='" + tKode + "'");
                 }else
         {
-            stm.executeUpdate("INSERT into listPerjalanan VALUES('"+tKode+"','"+sIDbus+
-                    "','"+sRegion+"','"+tWaktu+"','"+tTujuan+"',"+hrg+")");
+            stm.executeUpdate("INSERT into listPerjalanan VALUES('"+tKode+"','"+sRegion+"','"+tWaktu+"','"+tTujuan+"',"+hrg+")");
+            stm.executeUpdate("INSERT into listbangku VALUES('"+tTujuan+"',"+bgkEco+","+bgkVip+","+bgkAc+","+bgkPts+")");
         }
          Tableperjalanan.setModel(new DefaultTableModel(dataTable,header));
         baca_data();
@@ -434,54 +471,25 @@ public class ListPerjalanan extends javax.swing.JFrame {
         sRegion = (String)cRegion.getSelectedItem();
     }//GEN-LAST:event_CombojenisActionPerformed
 
-    private void ComboIDBusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboIDBusActionPerformed
+    private void checkEcoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkEcoActionPerformed
         // TODO add your handling code here:
-        JComboBox cIDbus= (javax.swing.JComboBox)evt.getSource();
-        //Membaca Item Yang Terpilih — > String
-        sIDbus = (String)cIDbus.getSelectedItem();
-    }//GEN-LAST:event_ComboIDBusActionPerformed
+        
+    }//GEN-LAST:event_checkEcoActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ListPerjalanan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ListPerjalanan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ListPerjalanan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ListPerjalanan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            /* Set the Nimbus look and feel */
+            //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+            /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+            * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+            */
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(ListPerjalanan.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -498,15 +506,17 @@ public class ListPerjalanan extends javax.swing.JFrame {
     private javax.swing.JButton Buttonkoreksi;
     private javax.swing.JButton Buttonsimpan;
     private javax.swing.JButton Buttontambah;
-    private javax.swing.JComboBox ComboIDBus;
     private javax.swing.JComboBox Combojenis;
     private javax.swing.JTable Tableperjalanan;
     private javax.swing.JTextField TextTujuan;
     private javax.swing.JTextField TextWaktu;
     private javax.swing.JTextField Textharga;
     private javax.swing.JTextField Textkodejln;
+    private javax.swing.JCheckBox checkAc;
+    private javax.swing.JCheckBox checkEco;
+    private javax.swing.JCheckBox checkPatas;
+    private javax.swing.JCheckBox checkVip;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
