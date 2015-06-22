@@ -4,13 +4,12 @@
  * and open the template in the editor.
  */
 package Interaction;
-
 /**
  *
  * @author bima
  */
-public class fromMenu extends javax.swing.JFrame {
 
+public class fromMenu extends javax.swing.JFrame {
     /**
      * Creates new form fromMenu
      */
@@ -18,7 +17,25 @@ public class fromMenu extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
     }
-
+    
+private void backup_db(String path){
+    String executeCmd = "C:/xampp/mysql/bin/mysqldump.exe -u root -p -B masterDB -r " + path;
+    System.out.println(executeCmd);
+    Process runtimeProcess; 
+    try {
+       runtimeProcess = Runtime.getRuntime().exec(new String[] { "cmd.exe", "/c", executeCmd });
+       int processComplete = runtimeProcess.waitFor();
+       System.out.println(processComplete);
+       if(processComplete == 0){
+          System.out.println("Backup Created Successfully !");
+       }
+       else {
+          System.out.println("Couldn't Create the backup !");
+       }
+    }catch(Exception ex){
+       ex.printStackTrace();
+    }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -41,6 +58,10 @@ public class fromMenu extends javax.swing.JFrame {
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenu7 = new javax.swing.JMenu();
+        jMenu4 = new javax.swing.JMenu();
+        jMenuItem7 = new javax.swing.JMenuItem();
+        jMenuItem9 = new javax.swing.JMenuItem();
+        jMenu5 = new javax.swing.JMenu();
 
         jMenu3.setText("jMenu3");
 
@@ -103,6 +124,25 @@ public class fromMenu extends javax.swing.JFrame {
         jMenuBar1.add(jMenu6);
 
         jMenu7.setText("Utility");
+
+        jMenu4.setText("Database");
+
+        jMenuItem7.setText("Backup");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
+        jMenu4.add(jMenuItem7);
+
+        jMenuItem9.setText("Restore");
+        jMenu4.add(jMenuItem9);
+
+        jMenu7.add(jMenu4);
+
+        jMenu5.setText("Thems");
+        jMenu7.add(jMenu5);
+
         jMenuBar1.add(jMenu7);
 
         setJMenuBar(jMenuBar1);
@@ -148,10 +188,16 @@ public class fromMenu extends javax.swing.JFrame {
         new PenjualanTicket().setVisible(true);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        // TODO add your handling code here:
+        new fromMenu().backup_db("C:/File.sql");
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -194,6 +240,8 @@ public class fromMenu extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenuBar jMenuBar1;
@@ -202,7 +250,9 @@ public class fromMenu extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }
