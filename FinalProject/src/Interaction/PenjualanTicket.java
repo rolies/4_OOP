@@ -37,7 +37,7 @@ public class PenjualanTicket extends javax.swing.JFrame {
      */
     DefaultTableModel tableModel = new DefaultTableModel(
             new Object [][] {}, 
-            new String [] { "ID Bus", "Jenis","Harga" 
+            new String [] { "ID Bus", "Jenis","Harga", "Bangku"
             }); 
     
     public PenjualanTicket() {
@@ -48,6 +48,7 @@ public class PenjualanTicket extends javax.swing.JFrame {
         setTombol(true);
         kosong();
         inisialisasi_tabel();
+        TextBgk.setVisible(false);
         Spinnertgl.setEditor(new JSpinner.DateEditor(Spinnertgl, "yyyy/MM/dd")); 
     }
     private void open_db(){       
@@ -74,7 +75,54 @@ public class PenjualanTicket extends javax.swing.JFrame {
 	JOptionPane.showMessageDialog(null, e); 
                 }
 }
-    
+    private void noBangku(){
+        try {    
+        int min = ComboJns.getSelectedIndex();
+        stm=con.createStatement(); 
+        ResultSet rfr=stm.executeQuery("select * from listbangku where tujuan='"+sTujuan+"'");
+        rfr.beforeFirst();
+            while(rfr.next()) {  
+                switch(min){
+                    case 0:
+                        ecoUpdt = rfr.getInt(2)-1;
+                        vipUpdt = rfr.getInt(3);
+                        acUpdt = rfr.getInt(4);
+                        ptsUpdt = rfr.getInt(5);
+                        xBgk = ecoUpdt;
+                        break;
+                    case 1:
+                        ecoUpdt = rfr.getInt(2);
+                        vipUpdt = rfr.getInt(3)-1;
+                        acUpdt = rfr.getInt(4);
+                        ptsUpdt = rfr.getInt(5);
+                        xBgk = vipUpdt;
+                        break;
+                    case 2:
+                        ecoUpdt = rfr.getInt(2);
+                        vipUpdt = rfr.getInt(3);
+                        acUpdt = rfr.getInt(4)-1;
+                        ptsUpdt = rfr.getInt(5);
+                        xBgk = acUpdt;
+                        break;
+                    case 3:
+                        ecoUpdt = rfr.getInt(2);
+                        vipUpdt = rfr.getInt(3);
+                        acUpdt = rfr.getInt(4);
+                        ptsUpdt = rfr.getInt(5)-1;
+                        xBgk = ptsUpdt;
+                        break;
+                    case -1:
+                        xBgk = 0;
+                        break;
+                }
+                
+                } 
+            rfr.close();
+            
+    }catch(SQLException e){
+        System.out.println("Error : "+e);
+    }
+    }
     private void detail_bis(String xkode) { 
         try{ 
             stm=con.createStatement(); 
@@ -98,6 +146,8 @@ public class PenjualanTicket extends javax.swing.JFrame {
                 
                 stm=con.createStatement(); 
             } 
+            noBangku();
+                TextBgk.setText(Integer.toString(xBgk));
             rs.close(); 
         } catch(SQLException e) {
         System.out.println("Error : "+e);
@@ -182,8 +232,9 @@ private void setField() {
 	try { 
 		String tKode=ComboID.getSelectedItem().toString(); 
 		String tJenis=ComboJns.getSelectedItem().toString(); 
-		double hrg=Double.parseDouble(TextHarga.getText()); 
-		tableModel.addRow(new Object[]{tKode,tJenis,hrg}); 
+		double hrg=Double.parseDouble(TextHarga.getText());
+                int bgku = Integer.parseInt(TextBgk.getText());
+		tableModel.addRow(new Object[]{tKode,tJenis,hrg,bgku}); 
 		inisialisasi_tabel(); 
 	} catch(Exception e) {
 			System.out.println("Error : "+e);
@@ -198,26 +249,35 @@ private void hitung_total() {
     }
 }
 private void checkBgku(){
-    if ("-1".equals(ecoBgk.getText())){
+    int ecoB = Integer.parseInt(ecoBgk.getText());
+    int vipB = Integer.parseInt(vipBgk.getText());
+    int acB = Integer.parseInt(acBgk.getText());
+    int ptsB = Integer.parseInt(ptsBgk.getText());
+    
+    if (ecoB < 0){
         ecoBgk.setForeground(Color.red);
+        ComboJns.addItem("Eco - Habis");
     } else {
         ecoBgk.setForeground(Color.white);
         ComboJns.addItem("Eco");
     }
-    if ("-1".equals(vipBgk.getText())){            
+    if (vipB < 0){            
         vipBgk.setForeground(Color.red);
+        ComboJns.addItem("Vip - Habis");
     } else {
         vipBgk.setForeground(Color.white);
         ComboJns.addItem("Vip");
     }
-    if ("-1".equals(acBgk.getText())) {
+    if (acB < 0) {
         acBgk.setForeground(Color.red);
+        ComboJns.addItem("Ac - Habis");
     } else {
         acBgk.setForeground(Color.white);
          ComboJns.addItem("Ac");
     }
-    if ("-1".equals(ptsBgk.getText())){
+    if (ptsB < 0){
         ptsBgk.setForeground(Color.red);
+        ComboJns.addItem("Pts - Habis");
     }else {
         ptsBgk.setForeground(Color.white);
         ComboJns.addItem("Pts");
@@ -250,15 +310,16 @@ private void simpan_transaksi() {
 	format_tanggal(); 
         String xNm_customer=TextnmCustomer.getText(); 
         String xContact=TextContact.getText(); 
+	noBangku();
+        stm.executeUpdate("update listbangku set eco="+ecoUpdt+",vip="+vipUpdt+", ac="+acUpdt+", pts="+ptsUpdt+" where tujuan='" + sTujuan + "'");
 	
-	for(int i=0;i<TabelTrans.getRowCount();i++) {
+        for(int i=0;i<TabelTrans.getRowCount();i++) {
 		String xKd_route=(String)TabelTrans.getValueAt(i,0); 
                 //Comuting Nomer Bangku belum di buat
                 String xJenis=(String)TabelTrans.getValueAt(i, 1);
 		double xHrg=(Double)TabelTrans.getValueAt(i,2); 
 		String zsql="insert into listTransaksiDetail values('"+xTrans+"','"+xKd_route+"','"+xJenis+"',"+xBgk+","+xHrg+")"; stm.executeUpdate(zsql);
 		}
-        //Penghitung Total Belum Di buat
         double xHrgtot=Double.parseDouble(TextTotal.getText());
         String msql="insert into listTransaksi values('"+xTrans+"','"+tanggal+"', '"+xNm_customer+"', '"+xContact+"', "+xHrgtot+")"; stm.executeUpdate(msql);
 	} catch(SQLException e) {
@@ -322,6 +383,7 @@ private void format_tanggal() {
         ComboJns = new javax.swing.JComboBox();
         TextHarga = new javax.swing.JTextField();
         btnAdd = new javax.swing.JButton();
+        TextBgk = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         vipBgk = new javax.swing.JLabel();
@@ -427,13 +489,13 @@ private void format_tanggal() {
 
         TabelTrans.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3"
+                "Title 1", "Title 2", "Title 3", "Tite 4"
             }
         ));
         jScrollPane1.setViewportView(TabelTrans);
@@ -555,6 +617,7 @@ private void format_tanggal() {
         );
 
         jPanel3.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 670, 60));
+        jPanel3.add(TextBgk, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, 80, -1));
 
         jLayeredPane1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 20, 670, 342));
 
@@ -803,49 +866,6 @@ private void format_tanggal() {
 
         setField();
         hitung_total();
-        
-        try {    
-        stm=con.createStatement(); 
-        ResultSet rfr=stm.executeQuery("select * from listbangku where tujuan='"+sTujuan+"'");
-        rfr.beforeFirst();
-            while(rfr.next()) {  
-                switch(sJenis){
-                    case "Eco":
-                        ecoUpdt = rfr.getInt(2)-1;
-                        vipUpdt = rfr.getInt(3);
-                        acUpdt = rfr.getInt(4);
-                        ptsUpdt = rfr.getInt(5);
-                        xBgk = ecoUpdt;
-                        break;
-                    case "Ac":
-                        ecoUpdt = rfr.getInt(2);
-                        vipUpdt = rfr.getInt(3)-1;
-                        acUpdt = rfr.getInt(4);
-                        ptsUpdt = rfr.getInt(5);
-                        xBgk = vipUpdt;
-                        break;
-                    case "Vip":
-                        ecoUpdt = rfr.getInt(2);
-                        vipUpdt = rfr.getInt(3);
-                        acUpdt = rfr.getInt(4)-1;
-                        ptsUpdt = rfr.getInt(5);
-                        xBgk = acUpdt;
-                        break;
-                    case "Pts":
-                        ecoUpdt = rfr.getInt(2);
-                        vipUpdt = rfr.getInt(3);
-                        acUpdt = rfr.getInt(4);
-                        ptsUpdt = rfr.getInt(5)-1;
-                        xBgk = ptsUpdt;
-                        break;
-                }
-                
-                } 
-            rfr.close();
-            stm.executeUpdate("update listbangku set eco="+ecoUpdt+",vip="+vipUpdt+", ac="+acUpdt+", pts="+ptsUpdt+" where tujuan='" + sTujuan + "'");
-    }catch(SQLException e){
-        System.out.println("Error : "+e);
-    }
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakActionPerformed
@@ -898,8 +918,9 @@ private void format_tanggal() {
         // TODO add your handling code here:
         tampilBgk(false);
         jLayeredPane1.moveToFront(jPanel1);
-        ComboJns.removeAllItems();
+        //ComboJns.removeAllItems();
         checking(); 
+        
     }//GEN-LAST:event_btnBangkuActionPerformed
 
     private void btnTutupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTutupActionPerformed
@@ -932,7 +953,7 @@ private void format_tanggal() {
         // TODO add your handling code here:
         JComboBox cJenis= (javax.swing.JComboBox)evt.getSource();
         sJenis = (String)cJenis.getSelectedItem();
-        detail_bis(sKode);
+        detail_bis(sKode);        
     }//GEN-LAST:event_ComboJnsActionPerformed
 
     /**
@@ -979,6 +1000,7 @@ private void format_tanggal() {
     private javax.swing.JSpinner Spinnertgl;
     private javax.swing.JTable TabelTrans;
     private javax.swing.JTextField TextBayar;
+    private javax.swing.JTextField TextBgk;
     private javax.swing.JTextField TextContact;
     private javax.swing.JTextField TextHarga;
     private javax.swing.JTextField TextIDtrans;
