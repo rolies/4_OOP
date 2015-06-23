@@ -29,7 +29,9 @@ public class PenjualanTicket extends javax.swing.JFrame {
     String sKode;
     String sRegion;
     String sTujuan;
+    String sJenis;
     String nm_bus;
+    int ecoUpdt, acUpdt, vipUpdt, ptsUpdt, xBgk;
     /**
      * Creates new form PenjualanTicket
      */
@@ -80,7 +82,20 @@ public class PenjualanTicket extends javax.swing.JFrame {
             rs.beforeFirst(); 
             while(rs.next()) {  
                 // Masukkan Combobox jenis 
-                TextHarga.setText(Double.toString((Double)rs.getDouble(5)));
+                double hrg = rs.getDouble(5);
+                if (sJenis == "Vip"){
+                    double temp = 10*hrg/100+hrg;
+                    TextHarga.setText(Double.toString(temp));
+                }else if (sJenis == "Ac"){
+                    double temp = 20*hrg/100+hrg;
+                    TextHarga.setText(Double.toString(temp));
+                }else if (sJenis == "Pts"){
+                    double temp = 30*hrg/100+hrg;
+                    TextHarga.setText(Double.toString(temp));
+                } else {
+                   TextHarga.setText(Double.toString(hrg));
+                }
+                
                 stm=con.createStatement(); 
             } 
             rs.close(); 
@@ -235,13 +250,13 @@ private void simpan_transaksi() {
 	format_tanggal(); 
         String xNm_customer=TextnmCustomer.getText(); 
         String xContact=TextContact.getText(); 
-	//String xkode=cmbKd_Kons.getSelectedItem().toString(); 
+	
 	for(int i=0;i<TabelTrans.getRowCount();i++) {
 		String xKd_route=(String)TabelTrans.getValueAt(i,0); 
                 //Comuting Nomer Bangku belum di buat
-                int xBgku = 3;
-		double xHrg=(Double)TabelTrans.getValueAt(i,3); 
-		String zsql="insert into listTransaksiDetail values('"+xTrans+"','"+xKd_route+"',"+xBgku+","+xHrg+")"; stm.executeUpdate(zsql);
+                String xJenis=(String)TabelTrans.getValueAt(i, 1);
+		double xHrg=(Double)TabelTrans.getValueAt(i,2); 
+		String zsql="insert into listTransaksiDetail values('"+xTrans+"','"+xKd_route+"','"+xJenis+"',"+xBgk+","+xHrg+")"; stm.executeUpdate(zsql);
 		}
         //Penghitung Total Belum Di buat
         double xHrgtot=Double.parseDouble(TextTotal.getText());
@@ -788,6 +803,49 @@ private void format_tanggal() {
 
         setField();
         hitung_total();
+        
+        try {    
+        stm=con.createStatement(); 
+        ResultSet rfr=stm.executeQuery("select * from listbangku where tujuan='"+sTujuan+"'");
+        rfr.beforeFirst();
+            while(rfr.next()) {  
+                switch(sJenis){
+                    case "Eco":
+                        ecoUpdt = rfr.getInt(2)-1;
+                        vipUpdt = rfr.getInt(3);
+                        acUpdt = rfr.getInt(4);
+                        ptsUpdt = rfr.getInt(5);
+                        xBgk = ecoUpdt;
+                        break;
+                    case "Ac":
+                        ecoUpdt = rfr.getInt(2);
+                        vipUpdt = rfr.getInt(3)-1;
+                        acUpdt = rfr.getInt(4);
+                        ptsUpdt = rfr.getInt(5);
+                        xBgk = vipUpdt;
+                        break;
+                    case "Vip":
+                        ecoUpdt = rfr.getInt(2);
+                        vipUpdt = rfr.getInt(3);
+                        acUpdt = rfr.getInt(4)-1;
+                        ptsUpdt = rfr.getInt(5);
+                        xBgk = acUpdt;
+                        break;
+                    case "Pts":
+                        ecoUpdt = rfr.getInt(2);
+                        vipUpdt = rfr.getInt(3);
+                        acUpdt = rfr.getInt(4);
+                        ptsUpdt = rfr.getInt(5)-1;
+                        xBgk = ptsUpdt;
+                        break;
+                }
+                
+                } 
+            rfr.close();
+            stm.executeUpdate("update listbangku set eco="+ecoUpdt+",vip="+vipUpdt+", ac="+acUpdt+", pts="+ptsUpdt+" where tujuan='" + sTujuan + "'");
+    }catch(SQLException e){
+        System.out.println("Error : "+e);
+    }
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakActionPerformed
@@ -816,7 +874,7 @@ private void format_tanggal() {
         // TODO add your handling code here:
         JComboBox cRegion= (javax.swing.JComboBox)evt.getSource();
         sKode = (String)cRegion.getSelectedItem();
-        detail_bis(sKode);
+        
     }//GEN-LAST:event_ComboIDActionPerformed
 
     private void ComboIDMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ComboIDMousePressed
@@ -872,6 +930,9 @@ private void format_tanggal() {
 
     private void ComboJnsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboJnsActionPerformed
         // TODO add your handling code here:
+        JComboBox cJenis= (javax.swing.JComboBox)evt.getSource();
+        sJenis = (String)cJenis.getSelectedItem();
+        detail_bis(sKode);
     }//GEN-LAST:event_ComboJnsActionPerformed
 
     /**

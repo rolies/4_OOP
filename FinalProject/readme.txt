@@ -1,8 +1,6 @@
 Next Repair
 =================================
-Save button to databse
-Harga per type
-Bangku
+Bangku > error ketika menyimpan di database... seharusnya di simpen di tabel terlebih dahulu
 First state which active and which deactived
 ================
 Report
