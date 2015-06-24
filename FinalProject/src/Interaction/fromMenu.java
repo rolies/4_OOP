@@ -4,6 +4,10 @@
  * and open the template in the editor.
  */
 package Interaction;
+import java.sql.*;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author bima
@@ -13,29 +17,73 @@ public class fromMenu extends javax.swing.JFrame {
     /**
      * Creates new form fromMenu
      */
+    Connection con;
+    ResultSet RsBrg;
+    Statement stm;
+    PreparedStatement pst;    
     public fromMenu() {
         initComponents();
         setLocationRelativeTo(null);
+        open_db();
+        fillTabel();
+        jPanel1.setVisible(false);
+    }
+    DefaultTableModel tableModel = new DefaultTableModel(
+            new Object [][] {}, 
+            new String [] { "ID transaksi","Waktu","Nama","Contact","Total"});
+    
+        public void inisialisasi_tabel(){
+        TabelLaporan.setModel(tableModel);
+    }
+    private void open_db(){       
+        try{
+            koneksiMysql kon = new koneksiMysql("localhost","root","","masterDB");
+            con = kon.getConnection();
+            //System.out.println("Berhasil ");
+            }catch (Exception e) {
+            System.out.println("Error : "+e);
+    }
     }
     
-private void backup_db(String path){
-    String executeCmd = "C:/xampp/mysql/bin/mysqldump.exe -u root -p -B masterDB -r " + path;
-    System.out.println(executeCmd);
-    Process runtimeProcess; 
-    try {
-       runtimeProcess = Runtime.getRuntime().exec(new String[] { "cmd.exe", "/c", executeCmd });
-       int processComplete = runtimeProcess.waitFor();
-       System.out.println(processComplete);
-       if(processComplete == 0){
-          System.out.println("Backup Created Successfully !");
-       }
-       else {
-          System.out.println("Couldn't Create the backup !");
-       }
-    }catch(Exception ex){
-       ex.printStackTrace();
-    }
-    }
+        private void fillTabel(){
+	try {
+		String sql = "select * from listtransaksi";
+		pst=con.prepareStatement(sql);
+		RsBrg=pst.executeQuery();
+		while(RsBrg.next()){
+			String kode = RsBrg.getString("ID_trans");
+                        String waktu = RsBrg.getString("waktu");
+                        String nama = RsBrg.getString("nm_customer");
+                        String contact = RsBrg.getString("contact");
+                        String total = RsBrg.getString("total");
+                        tableModel.addRow(new Object[]{kode,waktu,nama,contact, total}); 
+                        inisialisasi_tabel();
+		}
+	}catch(Exception e){
+	JOptionPane.showMessageDialog(null, e); 
+                }
+}
+    
+
+//
+//    private void backup_db(String path){
+//        String executeCmd = "C:/xampp/mysql/bin/mysqldump.exe -u root -p -B masterDB -r " + path;
+//        System.out.println(executeCmd);
+//        Process runtimeProcess; 
+//        try {
+//           runtimeProcess = Runtime.getRuntime().exec(new String[] { "cmd.exe", "/c", executeCmd });
+//           int processComplete = runtimeProcess.waitFor();
+//           System.out.println(processComplete);
+//           if(processComplete == 0){
+//              System.out.println("Backup Created Successfully !");
+//           }
+//           else {
+//              System.out.println("Couldn't Create the backup !");
+//           }
+//        }catch(Exception ex){
+//           ex.printStackTrace();
+//        }
+//        }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -46,6 +94,12 @@ private void backup_db(String path){
     private void initComponents() {
 
         jMenu3 = new javax.swing.JMenu();
+        jLayeredPane1 = new javax.swing.JLayeredPane();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        TabelLaporan = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -56,7 +110,6 @@ private void backup_db(String path){
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
-        jMenuItem8 = new javax.swing.JMenuItem();
         jMenu7 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
@@ -66,6 +119,71 @@ private void backup_db(String path){
         jMenu3.setText("jMenu3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanel1.setBackground(new java.awt.Color(79, 193, 233));
+
+        TabelLaporan.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4", "Title 5"
+            }
+        ));
+        jScrollPane1.setViewportView(TabelLaporan);
+
+        jLabel1.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
+        jLabel1.setText("KESELURUHAN");
+
+        jLabel2.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
+        jLabel2.setText("LAPORAN");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(147, 147, 147))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jLayeredPane1Layout = new javax.swing.GroupLayout(jLayeredPane1);
+        jLayeredPane1.setLayout(jLayeredPane1Layout);
+        jLayeredPane1Layout.setHorizontalGroup(
+            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jLayeredPane1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jLayeredPane1Layout.setVerticalGroup(
+            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jLayeredPane1Layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jLayeredPane1.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         jMenu1.setText("Master");
         jMenu1.addActionListener(new java.awt.event.ActionListener() {
@@ -116,10 +234,12 @@ private void backup_db(String path){
         jMenu6.setText("Report");
 
         jMenuItem6.setText("Transaction");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
         jMenu6.add(jMenuItem6);
-
-        jMenuItem8.setText("Bis");
-        jMenu6.add(jMenuItem8);
 
         jMenuBar1.add(jMenu6);
 
@@ -151,11 +271,17 @@ private void backup_db(String path){
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLayeredPane1)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 279, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLayeredPane1)
+                .addContainerGap())
         );
 
         pack();
@@ -190,8 +316,13 @@ private void backup_db(String path){
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
         // TODO add your handling code here:
-        new fromMenu().backup_db("C:/File.sql");
+        //new fromMenu().backup_db("C:/File.sql");
     }//GEN-LAST:event_jMenuItem7ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        // TODO add your handling code here:
+        jPanel1.setVisible(true);
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -237,6 +368,10 @@ private void backup_db(String path){
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable TabelLaporan;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -251,8 +386,9 @@ private void backup_db(String path){
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }

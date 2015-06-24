@@ -8,6 +8,8 @@ package Interaction;
 import java.awt.Color;
 import java.sql.*;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
@@ -32,6 +34,8 @@ public class PenjualanTicket extends javax.swing.JFrame {
     String sJenis;
     String nm_bus;
     int ecoUpdt, acUpdt, vipUpdt, ptsUpdt, xBgk;
+    int vipB, acB, ptsB, ecoB;
+    
     /**
      * Creates new form PenjualanTicket
      */
@@ -124,24 +128,49 @@ public class PenjualanTicket extends javax.swing.JFrame {
     }
     }
     private void detail_bis(String xkode) { 
+        
         try{ 
+            
             stm=con.createStatement(); 
             ResultSet rs=stm.executeQuery("select * from listPerjalanan where kd_prjlnan='"+xkode+"'");
             rs.beforeFirst(); 
             while(rs.next()) {  
                 // Masukkan Combobox jenis 
                 double hrg = rs.getDouble(5);
-                if (sJenis == "Vip"){
-                    double temp = 10*hrg/100+hrg;
-                    TextHarga.setText(Double.toString(temp));
-                }else if (sJenis == "Ac"){
-                    double temp = 20*hrg/100+hrg;
-                    TextHarga.setText(Double.toString(temp));
-                }else if (sJenis == "Pts"){
-                    double temp = 30*hrg/100+hrg;
-                    TextHarga.setText(Double.toString(temp));
-                } else {
-                   TextHarga.setText(Double.toString(hrg));
+                if (null != sJenis)switch (sJenis) {
+                    case "Vip":{
+                        if (vipB < 0)
+                            TextHarga.setText("");
+                        else {
+                            double temp = 10*hrg/100+hrg;
+                            TextHarga.setText(Double.toString(temp));
+                        }
+                        break;
+                        }
+                    case "Ac":{
+                        if (acB < 0)
+                            TextHarga.setText("");
+                        else {
+                            double temp = 20*hrg/100+hrg;
+                            TextHarga.setText(Double.toString(temp));
+                        }
+                        break;
+                        }
+                    case "Pts":{
+                        if (ptsB < 0)
+                            TextHarga.setText("");
+                         else {
+                            double temp = 30*hrg/100+hrg;
+                            TextHarga.setText(Double.toString(temp));
+                        }  
+                        break;
+                        }
+                    default:
+                        if (ecoB < 0)
+                            TextHarga.setText("");
+                        else
+                            TextHarga.setText(Double.toString(hrg));
+                        break;
                 }
                 
                 stm=con.createStatement(); 
@@ -195,14 +224,17 @@ public class PenjualanTicket extends javax.swing.JFrame {
      private void tampilBgk(boolean b){
          btnTutup.setVisible(!b);
          btnBangku.setVisible(b);
+         btnDel.setVisible(b);
+         ComboID.setVisible(b);
          jPanel1.setVisible(!b);
          jPanel2.setVisible(b);
      }
      private void setTombol(boolean t) {
         btnNew.setEnabled(t); 
+        btnAdd.setEnabled(!t);
+        btnDel.setEnabled(!t);
         btnSimpan.setEnabled(!t); 
         btnBatal.setEnabled(!t);
-        btnCetak.setEnabled(!t);
         btnKeluar.setEnabled(t); 
         //btnHapus.setEnabled(!t);
 }
@@ -249,10 +281,10 @@ private void hitung_total() {
     }
 }
 private void checkBgku(){
-    int ecoB = Integer.parseInt(ecoBgk.getText());
-    int vipB = Integer.parseInt(vipBgk.getText());
-    int acB = Integer.parseInt(acBgk.getText());
-    int ptsB = Integer.parseInt(ptsBgk.getText());
+    ecoB = Integer.parseInt(ecoBgk.getText());
+    vipB = Integer.parseInt(vipBgk.getText());
+    acB = Integer.parseInt(acBgk.getText());
+    ptsB = Integer.parseInt(ptsBgk.getText());
     
     if (ecoB < 0){
         ecoBgk.setForeground(Color.red);
@@ -310,21 +342,31 @@ private void simpan_transaksi() {
 	format_tanggal(); 
         String xNm_customer=TextnmCustomer.getText(); 
         String xContact=TextContact.getText(); 
-	noBangku();
-        stm.executeUpdate("update listbangku set eco="+ecoUpdt+",vip="+vipUpdt+", ac="+acUpdt+", pts="+ptsUpdt+" where tujuan='" + sTujuan + "'");
-	
+        	
         for(int i=0;i<TabelTrans.getRowCount();i++) {
 		String xKd_route=(String)TabelTrans.getValueAt(i,0); 
                 //Comuting Nomer Bangku belum di buat
                 String xJenis=(String)TabelTrans.getValueAt(i, 1);
 		double xHrg=(Double)TabelTrans.getValueAt(i,2); 
-		String zsql="insert into listTransaksiDetail values('"+xTrans+"','"+xKd_route+"','"+xJenis+"',"+xBgk+","+xHrg+")"; stm.executeUpdate(zsql);
-		}
+                int bgk=(Integer)TabelTrans.getValueAt(i,3); 
+		String zsql="insert into listTransaksiDetail values('"+xTrans+"','"+xKd_route+"','"+xJenis+"',"+bgk+","+xHrg+")"; stm.executeUpdate(zsql);
+		System.out.println("================================");
+                System.out.println("---------- Ticket Bus ----------");
+                System.out.println("ID trans: "+xTrans);
+                System.out.println("Nama: "+xNm_customer);
+                System.out.println("Contact: "+xContact);
+                System.out.println("Tujuan: "+sTujuan);
+                System.out.println("Tipe Bis: "+xJenis);
+                System.out.println("No Bangku: "+bgk);
+                System.out.println("Total: "+xHrg);
+                System.out.println("=================================");
+        }
         double xHrgtot=Double.parseDouble(TextTotal.getText());
         String msql="insert into listTransaksi values('"+xTrans+"','"+tanggal+"', '"+xNm_customer+"', '"+xContact+"', "+xHrgtot+")"; stm.executeUpdate(msql);
 	} catch(SQLException e) {
 		System.out.println("Error : "+e);
 	}
+        
 }
 //method membuat format tanggal sesuai dengan MySQL 
 private void format_tanggal() {
@@ -371,10 +413,9 @@ private void format_tanggal() {
         btnSimpan = new javax.swing.JButton();
         btnKeluar = new javax.swing.JButton();
         btnBatal = new javax.swing.JButton();
-        btnCetak = new javax.swing.JButton();
         TextTotal = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        btnDel = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         TextBayar = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
@@ -387,15 +428,11 @@ private void format_tanggal() {
         jPanel1 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         vipBgk = new javax.swing.JLabel();
-        vipWkt = new javax.swing.JLabel();
         ecoBgk = new javax.swing.JLabel();
-        ecoWkt = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         acBgk = new javax.swing.JLabel();
-        acWkt = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         ptsBgk = new javax.swing.JLabel();
-        ptsWkt = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -498,6 +535,11 @@ private void format_tanggal() {
                 "Title 1", "Title 2", "Title 3", "Tite 4"
             }
         ));
+        TabelTrans.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TabelTransMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(TabelTrans);
 
         jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(24, 90, 616, 75));
@@ -524,27 +566,19 @@ private void format_tanggal() {
                 btnBatalActionPerformed(evt);
             }
         });
-        jPanel3.add(btnBatal, new org.netbeans.lib.awtextra.AbsoluteConstraints(211, 287, 74, 39));
-
-        btnCetak.setText("Cetak");
-        btnCetak.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCetakActionPerformed(evt);
-            }
-        });
-        jPanel3.add(btnCetak, new org.netbeans.lib.awtextra.AbsoluteConstraints(121, 287, 72, 40));
+        jPanel3.add(btnBatal, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 290, 74, 39));
         jPanel3.add(TextTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(497, 176, 143, 32));
 
         jLabel8.setText("Total");
         jPanel3.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(438, 185, -1, -1));
 
-        jButton2.setText("Delete");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnDel.setText("Delete");
+        btnDel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnDelActionPerformed(evt);
             }
         });
-        jPanel3.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
+        jPanel3.add(btnDel, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
 
         jLabel9.setText("Jumlah Bayar");
         jPanel3.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(398, 214, -1, -1));
@@ -632,17 +666,9 @@ private void format_tanggal() {
         vipBgk.setForeground(new java.awt.Color(255, 255, 255));
         vipBgk.setText("20");
 
-        vipWkt.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
-        vipWkt.setForeground(new java.awt.Color(255, 255, 255));
-        vipWkt.setText("Malam");
-
         ecoBgk.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         ecoBgk.setForeground(new java.awt.Color(255, 255, 255));
         ecoBgk.setText("20");
-
-        ecoWkt.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
-        ecoWkt.setForeground(new java.awt.Color(255, 255, 255));
-        ecoWkt.setText("Malam");
 
         jLabel16.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel16.setForeground(new java.awt.Color(255, 255, 255));
@@ -652,10 +678,6 @@ private void format_tanggal() {
         acBgk.setForeground(new java.awt.Color(255, 255, 255));
         acBgk.setText("20");
 
-        acWkt.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
-        acWkt.setForeground(new java.awt.Color(255, 255, 255));
-        acWkt.setText("Malam");
-
         jLabel19.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel19.setForeground(new java.awt.Color(255, 255, 255));
         jLabel19.setText("AC : ");
@@ -663,10 +685,6 @@ private void format_tanggal() {
         ptsBgk.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         ptsBgk.setForeground(new java.awt.Color(255, 255, 255));
         ptsBgk.setText("20");
-
-        ptsWkt.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
-        ptsWkt.setForeground(new java.awt.Color(255, 255, 255));
-        ptsWkt.setText("Malam");
 
         jLabel22.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel22.setForeground(new java.awt.Color(255, 255, 255));
@@ -681,27 +699,19 @@ private void format_tanggal() {
                 .addComponent(jLabel16)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(ecoBgk)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(ecoWkt)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 108, Short.MAX_VALUE)
                 .addComponent(jLabel11)
                 .addGap(2, 2, 2)
                 .addComponent(vipBgk)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(vipWkt)
-                .addGap(54, 54, 54)
+                .addGap(107, 107, 107)
                 .addComponent(jLabel19)
                 .addGap(2, 2, 2)
                 .addComponent(acBgk)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(acWkt)
-                .addGap(50, 50, 50)
+                .addGap(103, 103, 103)
                 .addComponent(jLabel22)
                 .addGap(2, 2, 2)
                 .addComponent(ptsBgk)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(ptsWkt)
-                .addGap(50, 50, 50))
+                .addGap(103, 103, 103))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -710,20 +720,16 @@ private void format_tanggal() {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel16)
-                        .addComponent(ecoBgk)
-                        .addComponent(ecoWkt))
+                        .addComponent(ecoBgk))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel22)
-                        .addComponent(ptsBgk)
-                        .addComponent(ptsWkt))
+                        .addComponent(ptsBgk))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel19)
-                        .addComponent(acBgk)
-                        .addComponent(acWkt))
+                        .addComponent(acBgk))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel11)
-                        .addComponent(vipBgk)
-                        .addComponent(vipWkt)))
+                        .addComponent(vipBgk)))
                 .addGap(34, 34, 34))
         );
 
@@ -738,11 +744,11 @@ private void format_tanggal() {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnNew)
-                        .addGap(167, 167, 167)
+                        .addGap(120, 120, 120)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(ComboRegion, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(53, 53, 53)
+                            .addComponent(ComboRegion, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5))
+                        .addGap(100, 100, 100)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
                             .addGroup(layout.createSequentialGroup()
@@ -777,7 +783,7 @@ private void format_tanggal() {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(jLabel5)
-                        .addGap(6, 6, 6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(ComboRegion, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel6)
@@ -787,10 +793,10 @@ private void format_tanggal() {
                             .addComponent(btnBangku, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(26, 26, 26)
-                        .addComponent(btnTutup, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnTutup, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(3, 3, 3)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(3, 3, 3)
                         .addComponent(jLabel1)
                         .addGap(6, 6, 6)
                         .addComponent(TextIDtrans, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -805,14 +811,10 @@ private void format_tanggal() {
                         .addGap(6, 6, 6)
                         .addComponent(TextnmCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(13, 13, 13)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(TextContact, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel4)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(TextContact, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -852,7 +854,7 @@ private void format_tanggal() {
         TextKembali.setText(Double.toString(kembali));
     }//GEN-LAST:event_TextBayarActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelActionPerformed
         // TODO add your handling code here:
         DefaultTableModel model = (DefaultTableModel) this.TabelTrans.getModel();
         int[] rows = TabelTrans.getSelectedRows();
@@ -860,17 +862,65 @@ private void format_tanggal() {
             model.removeRow(rows[i]-i);
         }
         hitung_total();
-    }//GEN-LAST:event_jButton2ActionPerformed
+         String min = ComboJns.getSelectedItem().toString();
+        try {  
+        stm=con.createStatement(); 
+        ResultSet rfr=stm.executeQuery("select * from listbangku where tujuan='"+sTujuan+"'");
+        rfr.beforeFirst();
+            while(rfr.next()) {  
+                switch(min){
+                    case "Eco":
+                        ecoUpdt = rfr.getInt(2)+1;
+                        vipUpdt = rfr.getInt(3);
+                        acUpdt = rfr.getInt(4);
+                        ptsUpdt = rfr.getInt(5);
+                        xBgk = ecoUpdt;
+                        break;
+                    case "Vip":
+                        ecoUpdt = rfr.getInt(2);
+                        vipUpdt = rfr.getInt(3)+1;
+                        acUpdt = rfr.getInt(4);
+                        ptsUpdt = rfr.getInt(5);
+                        xBgk = vipUpdt;
+                        break;
+                    case "Ac":
+                        ecoUpdt = rfr.getInt(2);
+                        vipUpdt = rfr.getInt(3);
+                        acUpdt = rfr.getInt(4)+1;
+                        ptsUpdt = rfr.getInt(5);
+                        xBgk = acUpdt;
+                        break;
+                    case "Pts":
+                        ecoUpdt = rfr.getInt(2);
+                        vipUpdt = rfr.getInt(3);
+                        acUpdt = rfr.getInt(4);
+                        ptsUpdt = rfr.getInt(5)+1;
+                        xBgk = ptsUpdt;
+                        break;
+                }
+                } 
+            rfr.close();
+            stm.executeUpdate("update listbangku set eco="+ecoUpdt+",vip="+vipUpdt+", ac="+acUpdt+", pts="+ptsUpdt+" where tujuan='" + sTujuan + "'");
+            checking();
+    }catch(SQLException e){
+        System.out.println("Error : "+e);
+    }
+    }//GEN-LAST:event_btnDelActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
 
         setField();
         hitung_total();
-    }//GEN-LAST:event_btnAddActionPerformed
+        
+        try {
+            //checking();
+            stm.executeUpdate("update listbangku set eco="+ecoUpdt+",vip="+vipUpdt+", ac="+acUpdt+", pts="+ptsUpdt+" where tujuan='" + sTujuan + "'");
+            checking();
+        } catch (SQLException ex) {
+            Logger.getLogger(PenjualanTicket.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-    private void btnCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnCetakActionPerformed
+    }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBatalActionPerformed
         // TODO add your handling code here:
@@ -956,6 +1006,12 @@ private void format_tanggal() {
         detail_bis(sKode);        
     }//GEN-LAST:event_ComboJnsActionPerformed
 
+    private void TabelTransMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabelTransMouseClicked
+        // TODO add your handling code here:
+        int row=TabelTrans.getSelectedRow();
+         ComboJns.setSelectedItem((String)TabelTrans.getValueAt(row,1));
+    }//GEN-LAST:event_TabelTransMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -1008,18 +1064,15 @@ private void format_tanggal() {
     private javax.swing.JTextField TextTotal;
     private javax.swing.JTextField TextnmCustomer;
     private javax.swing.JLabel acBgk;
-    private javax.swing.JLabel acWkt;
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnBangku;
     private javax.swing.JButton btnBatal;
-    private javax.swing.JButton btnCetak;
+    private javax.swing.JButton btnDel;
     private javax.swing.JButton btnKeluar;
     private javax.swing.JButton btnNew;
     private javax.swing.JButton btnSimpan;
     private javax.swing.JButton btnTutup;
     private javax.swing.JLabel ecoBgk;
-    private javax.swing.JLabel ecoWkt;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1040,8 +1093,6 @@ private void format_tanggal() {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel ptsBgk;
-    private javax.swing.JLabel ptsWkt;
     private javax.swing.JLabel vipBgk;
-    private javax.swing.JLabel vipWkt;
     // End of variables declaration//GEN-END:variables
 }
